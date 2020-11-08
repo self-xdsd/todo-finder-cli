@@ -1,4 +1,4 @@
-package io.github.lukacupic.todocli;
+package com.selfxdsd.todocli;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -122,7 +122,11 @@ public class TodoParser {
 
             if (m.find()) {
                 body = m.group(3);
-                sb.append(" ").append(body);
+
+                if (sb.length() > 0) {
+                    sb.append(" ");
+                }
+                sb.append(body);
 
             } else {
                 currentIndex--;

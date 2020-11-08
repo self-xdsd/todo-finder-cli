@@ -1,4 +1,4 @@
-package io.github.lukacupic.todocli;
+package com.selfxdsd.todocli;
 
 public class Todo {
 
@@ -58,6 +58,60 @@ public class Todo {
         this.start = start;
         this.end = end;
         this.body = body;
+    }
+
+    /**
+     * Gets the starting line.
+     *
+     * @return the starting line
+     */
+    public int getStart() {
+        return start;
+    }
+
+    /**
+     * Gets the ending line.
+     *
+     * @return the ending line
+     */
+    public int getEnd() {
+        return end;
+    }
+
+    /**
+     * Gets the body.
+     *
+     * @return the body
+     */
+    public String getBody() {
+        return body;
+    }
+
+    /**
+     * Gets the ticket ID.
+     *
+     * @return the ticket ID
+     */
+    public String getTicketID() {
+        return ticketID;
+    }
+
+    /**
+     * Gets the estimated time.
+     *
+     * @return the estimated time
+     */
+    public String getEstimatedTime() {
+        return estimatedTime;
+    }
+
+    /**
+     * Gets the path of the file from which this Todo was extracted.
+     *
+     * @return the path
+     */
+    public String getPath() {
+        return path;
     }
 
     /**

@@ -1,4 +1,4 @@
-package io.github.lukacupic.todocli;
+package com.selfxdsd.todocli;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

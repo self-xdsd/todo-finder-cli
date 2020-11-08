@@ -1,4 +1,4 @@
-package io.github.lukacupic.todocli;
+package com.selfxdsd.todocli;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +58,20 @@ public class TodoParserTest {
     }
 
     @Test
+    public void whenParsingTodoWithBody_ExpectBodyToBeProperlyParsed() throws IOException {
+        List<Todo> todos = parser.parse("src/test/resources/TodosWithBodies.java");
+        assertEquals(7, todos.size());
+
+        assertEquals("this is an example of a single-line todo.", todos.get(0).getBody());
+        assertEquals("this is an example of a multi-line todo.", todos.get(1).getBody());
+        assertEquals("small todo", todos.get(2).getBody());
+        assertEquals("this todo should only be three lines long", todos.get(3).getBody());
+        assertEquals("this body is in the next line...", todos.get(4).getBody());
+        assertEquals("", todos.get(5).getBody());
+        assertEquals("...body...", todos.get(6).getBody());
+    }
+
+    @Test
     public void whenParsingConfigurationPropertiesClass_ExpectNoTodos() throws IOException {
         List<Todo> todos = parser.parse("src/test/resources/ConfigurationPropertiesReportEndpoint.java");
         assertEquals(0, todos.size());
@@ -76,7 +90,7 @@ public class TodoParserTest {
     }
 
     @Test()
-    public void whenParsingIllegalTodoClass_ExpectIllegalTodoException() throws IOException {
+    public void whenParsingIllegalTodosClass_ExpectNoTodos() throws IOException {
         List<Todo> todos = parser.parse("src/test/resources/IllegalTodos.java");
         assertEquals(0, todos.size());
     }
