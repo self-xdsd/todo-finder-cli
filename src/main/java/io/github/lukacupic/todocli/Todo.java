@@ -122,8 +122,9 @@ public class Todo {
 
     @Override
     public String toString() {
-        return String.format("TODO [Lines: '%d-%d', TicketID: '%s', Estimated Time: '%s', Body: '%s', Path: '%s']",
-                start, end, ticketID, estimatedTime, body, path
-        );
+        String linesPart = start == end ? "Line: " + start : String.format("Lines: %d-%d", start, end);
+
+        return String.format("TODO [%s, TicketID: %s, Estimated Time: %s, Body: '%s', Path: '%s']",
+                linesPart, ticketID, estimatedTime, body, path);
     }
 }

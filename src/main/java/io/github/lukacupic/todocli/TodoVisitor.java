@@ -45,7 +45,7 @@ public class TodoVisitor extends SimpleFileVisitor<Path> {
         List<Todo> todos = parser.parse(file);
         if (todos.size() == 0) return CONTINUE;
 
-        System.out.printf("\nFound %d TODO objects in %s:\n", todos.size(), file);
+        System.out.printf("\nFound %d TODOs in %s:\n", todos.size(), file);
 
         for (Todo todo : todos) {
             System.out.println(todo);

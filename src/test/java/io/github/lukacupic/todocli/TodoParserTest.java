@@ -15,12 +15,10 @@ import static org.junit.Assert.assertEquals;
 public class TodoParserTest {
 
     private TodoParser parser;
-//    private ClassLoader classLoader;
 
     @Before
     public void setUp() {
         parser = new TodoParser();
-//        classLoader = getClass().getClassLoader();
     }
 
     @After
