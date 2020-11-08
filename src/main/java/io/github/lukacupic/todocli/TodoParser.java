@@ -19,7 +19,15 @@ public class TodoParser {
     /**
      * Finds and returns a list of all TODOs found in the file given by its path.
      */
-    public List<Todo> find(String path) throws IOException {
+    public List<Todo> parse(String path) {
+        try {
+            return parseInternal(path);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not read the given file: " + path);
+        }
+    }
+
+    private List<Todo> parseInternal(String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
         List<Todo> todos = new ArrayList<>();
 
