@@ -122,7 +122,7 @@ public class Todo {
 
     @Override
     public String toString() {
-        return String.format("TODO [Lines: %d-%d, TicketID: %s, Estimated Time: %s, Body: %s, Path: %s]",
+        return String.format("TODO [Lines: '%d-%d', TicketID: '%s', Estimated Time: '%s', Body: '%s', Path: '%s']",
                 start, end, ticketID, estimatedTime, body, path
         );
     }

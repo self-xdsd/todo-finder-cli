@@ -18,7 +18,7 @@ public class TodoCLI {
         try {
             Files.walkFileTree(Paths.get("."), new TodoVisitor());
         } catch (IOException e) {
-            System.err.println("Could not walk file tree!");
+            System.err.println("Could not walk the given directory structure!");
         }
     }
 }

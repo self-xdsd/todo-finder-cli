@@ -28,6 +28,16 @@ public class TodoVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        return super.preVisitDirectory(dir, attrs);
+    }
+
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        return super.postVisitDirectory(dir, exc);
+    }
+
+    @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
         String file = path.toString();
         if (!file.endsWith(".java")) return CONTINUE;
@@ -35,7 +45,12 @@ public class TodoVisitor extends SimpleFileVisitor<Path> {
         List<Todo> todos = parser.parse(file);
         if (todos.size() == 0) return CONTINUE;
 
-        System.out.printf("Found %d TODO objects in %s\n", todos.size(), file);
+        System.out.printf("\nFound %d TODO objects in %s:\n", todos.size(), file);
+
+        for (Todo todo : todos) {
+            System.out.println(todo);
+        }
+        System.out.println();
 
         return CONTINUE;
     }
