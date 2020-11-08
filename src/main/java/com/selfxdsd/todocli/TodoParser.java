@@ -148,7 +148,7 @@ public class TodoParser {
         String[] parts = header.split(":");
 
         todo.setTicketID(parts[0]);
-        todo.setEstimatedTime(parts[1]);
+        todo.setEstimatedTime(getEstimatedTimeAsInt(parts[1]));
         todo.setPath(path);
     }
 
@@ -168,5 +168,16 @@ public class TodoParser {
             }
         }
         return -1;
+    }
+
+    /**
+     * Removes any trailing characters (such as "min" or "minutes") and returns the
+     * proper integer value of the estimated time
+     *
+     * @param estimatedTime the estimated time, as extracted from the header
+     * @return estimated time in minutes
+     */
+    private static int getEstimatedTimeAsInt(String estimatedTime) {
+        return Integer.parseInt(estimatedTime.replaceAll("[A-Za-z]+", ""));
     }
 }

@@ -23,9 +23,9 @@ public class Todo {
     private String ticketID;
 
     /**
-     * The estimated time to complete this Todo.
+     * The estimated time (in minutes) to complete this Todo.
      */
-    private String estimatedTime;
+    private int estimatedTime;
 
     /**
      * The path of the file from which this Todo was extracted.
@@ -40,7 +40,7 @@ public class Todo {
      * @param ticketID      the ticket ID
      * @param estimatedTime the estimated time
      */
-    public Todo(int start, int end, String ticketID, String estimatedTime) {
+    public Todo(int start, int end, String ticketID, int estimatedTime) {
         this.start = start;
         this.end = end;
         this.ticketID = ticketID;
@@ -101,7 +101,7 @@ public class Todo {
      *
      * @return the estimated time
      */
-    public String getEstimatedTime() {
+    public int getEstimatedTime() {
         return estimatedTime;
     }
 
@@ -128,7 +128,7 @@ public class Todo {
      *
      * @param estimatedTime the estimated time
      */
-    public void setEstimatedTime(String estimatedTime) {
+    public void setEstimatedTime(int estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 
@@ -144,10 +144,7 @@ public class Todo {
     /**
      * Compares this to the given, other, Todo object. The method returns true if and only
      * if the following conditions are satisfied: The objects have the same starting and ending
-     * line numbers; the objects have the same ticket ID; the objects have the same estimated time.
-     * <p>
-     * Body is not compared because there could be slight irregularities as a result of parsing,
-     * such as a difference in a blank character or a punctuation mark.
+     * line numbers; the objects have the same estimated time; the objects have the same ticket ID.
      *
      * @param o the object to compare this one to
      * @return true if the objects are equal; false otherwise
@@ -161,16 +158,17 @@ public class Todo {
 
         if (start != todo.start) return false;
         if (end != todo.end) return false;
+        if (estimatedTime != todo.estimatedTime) return false;
         if (!ticketID.equals(todo.ticketID)) return false;
-        return estimatedTime.equals(todo.estimatedTime);
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = start;
         result = 31 * result + end;
+        result = 31 * result + estimatedTime;
         result = 31 * result + ticketID.hashCode();
-        result = 31 * result + estimatedTime.hashCode();
         return result;
     }
 

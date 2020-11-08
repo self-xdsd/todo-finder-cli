@@ -32,11 +32,11 @@ public class TodoParserTest {
         assertEquals(todos.size(), 2);
 
         Todo todo1 = todos.get(0);
-        Todo expectedTodo1 = new Todo(42, 42, "#153", "30min");
+        Todo expectedTodo1 = new Todo(42, 42, "#153", 30);
         assertEquals(expectedTodo1, todo1);
 
         Todo todo2 = todos.get(1);
-        Todo expectedTodo2 = new Todo(69, 72, "#187", "30min");
+        Todo expectedTodo2 = new Todo(69, 72, "#187", 30);
         assertEquals(expectedTodo2, todo2);
     }
 
@@ -45,16 +45,16 @@ public class TodoParserTest {
         List<Todo> todos = parser.parse("src/test/resources/LegalTodos.java");
         assertEquals(10, todos.size());
 
-        assertEquals(new Todo(1, 1, "#900", "90days"), todos.get(0));
-        assertEquals(new Todo(3, 3, "#111", "11min"), todos.get(1));
-        assertEquals(new Todo(10, 11, "#112", "12min"), todos.get(2));
-        assertEquals(new Todo(20, 35, "#113", "13min"), todos.get(3));
-        assertEquals(new Todo(41, 41, "#114", "14min"), todos.get(4));
-        assertEquals(new Todo(42, 42, "#115", "15min"), todos.get(5));
-        assertEquals(new Todo(50, 52, "#116", "16min"), todos.get(6));
-        assertEquals(new Todo(62, 62, "#117", "17min"), todos.get(7));
-        assertEquals(new Todo(63, 64, "#118", "18min"), todos.get(8));
-        assertEquals(new Todo(65, 65, "#119", "19min"), todos.get(9));
+        assertEquals(new Todo(1, 1, "#900", 90), todos.get(0));
+        assertEquals(new Todo(3, 3, "#111", 11), todos.get(1));
+        assertEquals(new Todo(10, 11, "#112", 12), todos.get(2));
+        assertEquals(new Todo(20, 35, "#113", 13), todos.get(3));
+        assertEquals(new Todo(41, 41, "#114", 14), todos.get(4));
+        assertEquals(new Todo(42, 42, "#115", 15), todos.get(5));
+        assertEquals(new Todo(50, 52, "#116", 16), todos.get(6));
+        assertEquals(new Todo(62, 62, "#117", 17), todos.get(7));
+        assertEquals(new Todo(63, 64, "#118", 18), todos.get(8));
+        assertEquals(new Todo(65, 65, "#119", 19), todos.get(9));
     }
 
     @Test
