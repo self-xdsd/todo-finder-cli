@@ -48,15 +48,23 @@ public class TodoParser {
         MULTI_LINE_REGEX = MULTI_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
     }
 
+    private int currentIndex;
+
+    /**
+     * Creates a new TodoParser object.
+     */
+    public TodoParser() {
+    }
+
     /**
      * Finds and returns a list of all TODOs found in the file given its path.
      */
-    public static List<Todo> parse(String path) throws IOException {
+    public List<Todo> parse(String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
         List<Todo> todos = new ArrayList<>();
 
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (currentIndex = 0; currentIndex < lines.size(); currentIndex++) {
+            String line = lines.get(currentIndex);
 
             int headerIndex = getHeaderIndex(line);
             if (headerIndex == -1) continue;
@@ -64,38 +72,63 @@ public class TodoParser {
             String[] parts = line.substring(headerIndex).trim().split("\\s", 2);
             if (parts[0].isEmpty()) continue;
 
-            String header = parts[0].trim();
+            String body = parts.length == 2 ? parts[1].trim() : "";
 
+            Todo todo;
             if (line.matches(SINGLE_LINE_REGEX)) {
-                String body = parts.length == 2 ? parts[1].trim() : "";
-                Todo todo = new Todo(i + 1, i + 1, body, header, path);
-                todos.add(todo);
+                todo = parseSingleLineTodo(body);
+
+            } else if (line.matches(MULTI_LINE_REGEX)) {
+                todo = parseMultiLineTodo(lines, body);
+
+            } else {
+                continue;
             }
 
-            if (line.matches(MULTI_LINE_REGEX)) {
-                int start = i + 1;
-                String body = parts[1].trim();
-                StringBuilder sb = new StringBuilder(body);
+            String header = parts[0].trim();
+            setRemainingTodoFields(todo, header, path);
 
-                while (true) {
-                    line = lines.get(++i);
-
-                    Matcher m = MULTI_LINE_PATTERN.matcher(line);
-
-                    if (m.find()) {
-                        body = m.group(3);
-                        sb.append(" ").append(body);
-
-                    } else {
-                        i--;
-                        break;
-                    }
-                }
-                Todo todo = new Todo(start, i + 1, sb.toString(), header, path);
-                todos.add(todo);
-            }
+            todos.add(todo);
         }
         return todos;
+    }
+
+    /**
+     * Parses the current line of the input file and extracts the TODO object.
+     *
+     * @param body the TODO's body; could be empty
+     * @return the extracted TODO object
+     */
+    private Todo parseSingleLineTodo(String body) {
+        return new Todo(currentIndex + 1, currentIndex + 1, body);
+    }
+
+    /**
+     * Parses multiple lines of the input file and extracts the TODO object.
+     *
+     * @param body the TODO's body; could be empty
+     * @return the extracted TODO object
+     */
+    private Todo parseMultiLineTodo(List<String> lines, String body) {
+        int start = currentIndex + 1;
+        StringBuilder sb = new StringBuilder(body);
+
+        while (true) {
+            String line = lines.get(++currentIndex);
+
+            Matcher m = MULTI_LINE_PATTERN.matcher(line);
+
+            if (m.find()) {
+                body = m.group(3);
+                sb.append(" ").append(body);
+
+            } else {
+                currentIndex--;
+                break;
+            }
+        }
+
+        return new Todo(start, currentIndex + 1, sb.toString());
     }
 
     /**
@@ -114,5 +147,20 @@ public class TodoParser {
             }
         }
         return -1;
+    }
+
+    /**
+     * Sets the remaining TODO fields: ticket ID, estimated time, and path.
+     *
+     * @param todo   the TODO object to update
+     * @param header the header, containing ticket ID and estimated time
+     * @param path   the path of the file in which the TODO was found
+     */
+    private void setRemainingTodoFields(Todo todo, String header, String path) {
+        String[] parts = header.split(":");
+
+        todo.setTicketID(parts[0]);
+        todo.setEstimatedTime(parts[1]);
+        todo.setPath(path);
     }
 }

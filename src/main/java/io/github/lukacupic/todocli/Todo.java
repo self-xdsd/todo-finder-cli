@@ -9,13 +9,13 @@ public class Todo {
     private String estimatedTime;
     private String path;
 
-    public Todo(int start, int end, String body, String header, String path) {
+    public Todo(int start, int end, String body, String ticketID, String estimatedTime, String path) {
         this.start = start;
         this.end = end;
         this.body = body;
+        this.ticketID = ticketID;
+        this.estimatedTime = estimatedTime;
         this.path = path;
-
-        parseHeader(header);
     }
 
     public Todo(int start, int end, String ticketID, String estimatedTime) {
@@ -25,10 +25,10 @@ public class Todo {
         this.estimatedTime = estimatedTime;
     }
 
-    private void parseHeader(String header) {
-        String[] parts = header.split(":");
-        this.ticketID = parts[0];
-        this.estimatedTime = parts[1];
+    public Todo(int start, int end, String body) {
+        this.start = start;
+        this.end = end;
+        this.body = body;
     }
 
     public int getStart() {
@@ -53,6 +53,30 @@ public class Todo {
 
     public String getPath() {
         return path;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setTicketID(String ticketID) {
+        this.ticketID = ticketID;
+    }
+
+    public void setEstimatedTime(String estimatedTime) {
+        this.estimatedTime = estimatedTime;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     /**
