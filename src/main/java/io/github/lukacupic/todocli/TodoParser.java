@@ -13,18 +13,43 @@ public class TodoParser {
     /**
      * The list of all TODO markers.
      */
-    private static final String[] TODOS = new String[]{"@todo", "TODO", "@fixme", "FIXME"};
+    private static final String[] MARKERS = new String[]{"@todo", "TODO", "@fixme", "FIXME"};
 
     /**
-     * Patterns and Regexes used for matching comments and lines.
+     * The replacement label for MARKERS.
      */
-    private static final Pattern TODO_LINE_PATTERN = Pattern.compile("(\\s*[*])(\\s\\s)(.*)");
-    private static final String TODO_SINGLE_LINE = "^(\\s*//\\s*)(@todo|TODO|@fixme|FIXME).*$";
-    private static final String TODO_MULTI_LINE = "^(\\s*[*]\\s*)(@todo|TODO|@fixme|FIXME).*$";
+    private static final String MARKERS_LABEL = "<MARKERS>";
+
+    /**
+     * Regex used for matching a single-line comment.
+     */
+    private static String SINGLE_LINE_REGEX = "^(\\s*//\\s*)(" + MARKERS_LABEL + ").*$";
 
 
     /**
-     * Finds and returns a list of all TODOs found in the file given by its path.
+     * Regex used for matching a multi-line comment.
+     */
+    private static String MULTI_LINE_REGEX = "^(\\s*[*]\\s*)(" + MARKERS_LABEL + ").*$";
+
+
+    /**
+     * Pattern used for matching the body of a TODO in a multi-line comment.
+     */
+    private static Pattern MULTI_LINE_PATTERN = Pattern.compile("(\\s*[*])(\\s\\s)(.*)");
+
+    static {
+        StringBuilder sb = new StringBuilder();
+        for (String todo : MARKERS) {
+            sb.append(todo).append("|");
+        }
+        String markersGroup = sb.substring(0, sb.length() - 1);
+
+        SINGLE_LINE_REGEX = SINGLE_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
+        MULTI_LINE_REGEX = MULTI_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
+    }
+
+    /**
+     * Finds and returns a list of all TODOs found in the file given its path.
      */
     public static List<Todo> parse(String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
@@ -41,13 +66,13 @@ public class TodoParser {
 
             String header = parts[0].trim();
 
-            if (line.matches(TODO_SINGLE_LINE)) {
+            if (line.matches(SINGLE_LINE_REGEX)) {
                 String body = parts.length == 2 ? parts[1].trim() : "";
                 Todo todo = new Todo(i + 1, i + 1, body, header, path);
                 todos.add(todo);
             }
 
-            if (line.matches(TODO_MULTI_LINE)) {
+            if (line.matches(MULTI_LINE_REGEX)) {
                 int start = i + 1;
                 String body = parts[1].trim();
                 StringBuilder sb = new StringBuilder(body);
@@ -55,7 +80,7 @@ public class TodoParser {
                 while (true) {
                     line = lines.get(++i);
 
-                    Matcher m = TODO_LINE_PATTERN.matcher(line);
+                    Matcher m = MULTI_LINE_PATTERN.matcher(line);
 
                     if (m.find()) {
                         body = m.group(3);
@@ -82,7 +107,7 @@ public class TodoParser {
      * @return index of header or -1 if the line contains no TODO
      */
     private static int getHeaderIndex(String line) {
-        for (String todo : TODOS) {
+        for (String todo : MARKERS) {
             int todoIndex = line.indexOf(todo);
             if (todoIndex != -1) {
                 return todoIndex + todo.length();
