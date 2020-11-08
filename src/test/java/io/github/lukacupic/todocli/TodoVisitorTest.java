@@ -1,17 +1,17 @@
 package io.github.lukacupic.todocli;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.After;
+import org.junit.Before;
 
 class TodoVisitorTest {
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() throws Exception {
+
     }
 
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() throws Exception {
+
     }
 }
