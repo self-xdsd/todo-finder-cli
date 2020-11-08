@@ -48,6 +48,9 @@ public class TodoParser {
         MULTI_LINE_REGEX = MULTI_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
     }
 
+    /**
+     * Index of the currently parsed line.
+     */
     private int currentIndex;
 
     /**
@@ -72,6 +75,7 @@ public class TodoParser {
             String[] parts = line.substring(headerIndex).trim().split("\\s", 2);
             if (parts[0].isEmpty()) continue;
 
+            String header = parts[0].trim();
             String body = parts.length == 2 ? parts[1].trim() : "";
 
             Todo todo;
@@ -85,9 +89,7 @@ public class TodoParser {
                 continue;
             }
 
-            String header = parts[0].trim();
             setRemainingTodoFields(todo, header, path);
-
             todos.add(todo);
         }
         return todos;
@@ -132,6 +134,21 @@ public class TodoParser {
     }
 
     /**
+     * Sets the remaining TODO fields: ticket ID, estimated time, and path.
+     *
+     * @param todo   the TODO object to update
+     * @param header the header, containing ticket ID and estimated time
+     * @param path   the path of the file in which the TODO was found
+     */
+    private void setRemainingTodoFields(Todo todo, String header, String path) {
+        String[] parts = header.split(":");
+
+        todo.setTicketID(parts[0]);
+        todo.setEstimatedTime(parts[1]);
+        todo.setPath(path);
+    }
+
+    /**
      * Checks if a TODO is present in the given line and if so, returns
      * the index of its header, i.e. of the header's first character.
      * Header consists of the ticker number and the estimated time.
@@ -147,20 +164,5 @@ public class TodoParser {
             }
         }
         return -1;
-    }
-
-    /**
-     * Sets the remaining TODO fields: ticket ID, estimated time, and path.
-     *
-     * @param todo   the TODO object to update
-     * @param header the header, containing ticket ID and estimated time
-     * @param path   the path of the file in which the TODO was found
-     */
-    private void setRemainingTodoFields(Todo todo, String header, String path) {
-        String[] parts = header.split(":");
-
-        todo.setTicketID(parts[0]);
-        todo.setEstimatedTime(parts[1]);
-        todo.setPath(path);
     }
 }

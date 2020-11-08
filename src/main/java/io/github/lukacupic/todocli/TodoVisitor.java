@@ -9,10 +9,20 @@ import java.util.List;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
+/**
+ * Performs the visit of the given directory structure and prints a list of
+ * all extracted TODOs.
+ */
 public class TodoVisitor extends SimpleFileVisitor<Path> {
 
+    /**
+     * The parser used to extract the TODOs.
+     */
     private TodoParser parser;
 
+    /**
+     * Creates a new TodoVisitor object.
+     */
     public TodoVisitor() {
         this.parser = new TodoParser();
     }

@@ -2,22 +2,44 @@ package io.github.lukacupic.todocli;
 
 public class Todo {
 
+    /**
+     * The first line of the Todo.
+     */
     private int start;
+
+    /**
+     * The last line of the Todo.
+     */
     private int end;
+
+    /**
+     * The Todo's body.
+     */
     private String body;
+
+    /**
+     * The ID of the ticket denoted by this Todo.
+     */
     private String ticketID;
+
+    /**
+     * The estimated time to complete this Todo.
+     */
     private String estimatedTime;
+
+    /**
+     * The path of the file from which this Todo was extracted.
+     */
     private String path;
 
-    public Todo(int start, int end, String body, String ticketID, String estimatedTime, String path) {
-        this.start = start;
-        this.end = end;
-        this.body = body;
-        this.ticketID = ticketID;
-        this.estimatedTime = estimatedTime;
-        this.path = path;
-    }
-
+    /**
+     * Creates a new Todo object.
+     *
+     * @param start         the starting line
+     * @param end           the ending line
+     * @param ticketID      the ticket ID
+     * @param estimatedTime the estimated time
+     */
     public Todo(int start, int end, String ticketID, String estimatedTime) {
         this.start = start;
         this.end = end;
@@ -25,70 +47,56 @@ public class Todo {
         this.estimatedTime = estimatedTime;
     }
 
+    /**
+     * Creates a new Todo object.
+     *
+     * @param start the starting line
+     * @param end   the ending line
+     * @param body  the body
+     */
     public Todo(int start, int end, String body) {
         this.start = start;
         this.end = end;
         this.body = body;
     }
 
-    public int getStart() {
-        return start;
-    }
-
-    public int getEnd() {
-        return end;
-    }
-
-    public String getTicketID() {
-        return ticketID;
-    }
-
-    public String getEstimatedTime() {
-        return estimatedTime;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public void setEnd(int end) {
-        this.end = end;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
+    /**
+     * Sets the ticket ID.
+     *
+     * @param ticketID the ticket ID
+     */
     public void setTicketID(String ticketID) {
         this.ticketID = ticketID;
     }
 
+    /**
+     * Sets the estimated time.
+     *
+     * @param estimatedTime the estimated time
+     */
     public void setEstimatedTime(String estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 
+    /**
+     * Sets the path.
+     *
+     * @param path the path
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
     /**
-     * Compares this Todo object to the given Todo. The method returns true if and only
+     * Compares this to the given, other, Todo object. The method returns true if and only
      * if the following conditions are satisfied: The objects have the same starting and ending
      * line numbers; the objects have the same ticket ID; the objects have the same estimated time.
      * <p>
      * Body is not compared because there could be slight irregularities as a result of parsing,
-     * such as an extra or a missing space, non-corresponding punctuation marks, etc.
+     * such as a difference in a blank character or a punctuation mark.
      *
      * @param o the object to compare this one to
-     * @return true if the Todo objects are equal; false otherwise
+     * @return true if the objects are equal; false otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -114,8 +122,8 @@ public class Todo {
 
     @Override
     public String toString() {
-        return String.format("TODO [Lines: %d-%d, TicketID: %s, Time: %s, Body: %s]",
-                start, end, ticketID, estimatedTime, body
+        return String.format("TODO [Lines: %d-%d, TicketID: %s, Estimated Time: %s, Body: %s, Path: %s]",
+                start, end, ticketID, estimatedTime, body, path
         );
     }
 }
