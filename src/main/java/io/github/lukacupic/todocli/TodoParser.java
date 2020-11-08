@@ -11,7 +11,10 @@ import java.util.regex.Pattern;
 public class TodoParser {
 
     private static final String[] TODOS = new String[]{"@todo", "TODO", "@fixme", "FIXME"};
+
     private static final Pattern TODO_LINE_PATTERN = Pattern.compile("(\\s*[*])(\\s\\s)(.*)");
+    private static final String TODO_SINGLE_LINE = "^(\\s*//).*$";
+    private static final String TODO_MULTI_LINE = "^(\\s*[*]).*$";
 
     public TodoParser() {
     }
@@ -40,13 +43,13 @@ public class TodoParser {
             String[] parts = line.substring(headerIndex).trim().split("\\s", 2);
             String header = parts[0].trim();
 
-            if (line.matches("^(\\s*//).*$")) {
+            if (line.matches(TODO_SINGLE_LINE)) {
                 String body = parts.length == 2 ? parts[1].trim() : "";
-                Todo todo = new Todo(i + 1, i + 1, body, header);
+                Todo todo = new Todo(i + 1, i + 1, body, header, path);
                 todos.add(todo);
             }
 
-            if (line.matches("^(\\s*[*]).*$")) {
+            if (line.matches(TODO_MULTI_LINE)) {
                 int start = i + 1;
                 String body = parts[1].trim();
                 StringBuilder sb = new StringBuilder(body);
@@ -65,7 +68,7 @@ public class TodoParser {
                         break;
                     }
                 }
-                Todo todo = new Todo(start, i + 1, sb.toString(), header);
+                Todo todo = new Todo(start, i + 1, sb.toString(), header, path);
                 todos.add(todo);
             }
         }
