@@ -22,104 +22,191 @@
  */
 package com.selfxdsd.todocli;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(JUnit4.class)
-public class TodoParserTest {
+/**
+ * Unit tests for {@link TodoParser}.
+ * @version $Id$
+ * @since 0.0.1
+ */
+public final class TodoParserTest {
 
-    private TodoParser parser;
-
-    @Before
-    public void setUp() {
-        parser = new TodoParser();
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    /**
+     * Class RtImagesITCase should contain 2 TODOs.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingRtClass_ExpectTwoReturnedTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/RtImagesITCase.java");
+    public void rtImagesITCaseExpectTwoReturnedTodos() throws IOException {
+        List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/RtImagesITCase.java"
+        );
 
         assertEquals(todos.size(), 2);
 
-        Todo todo1 = todos.get(0);
-        Todo expectedTodo1 = new Todo(42, 42, "#153", 30);
-        assertEquals(expectedTodo1, todo1);
+        Todo first = todos.get(0);
+        Todo expectedFirst = new Todo(42, 42, "#153", 30);
+        assertEquals(expectedFirst, first);
 
-        Todo todo2 = todos.get(1);
-        Todo expectedTodo2 = new Todo(69, 72, "#187", 30);
-        assertEquals(expectedTodo2, todo2);
+        Todo second = todos.get(1);
+        Todo expectedSecond = new Todo(69, 72, "#187", 30);
+        assertEquals(expectedSecond, second);
     }
 
+    /**
+     * Class LegalTodos should contain ten TODOs.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingLegalTodosClass_ExpectExactlyTenTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/LegalTodos.java");
+    public void legalTodosClassExpectExactlyTenTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/LegalTodos.java"
+        );
         assertEquals(10, todos.size());
 
-        assertEquals(new Todo(1, 1, "#900", 90), todos.get(0));
-        assertEquals(new Todo(3, 3, "#111", 11), todos.get(1));
-        assertEquals(new Todo(10, 11, "#112", 12), todos.get(2));
-        assertEquals(new Todo(20, 35, "#113", 13), todos.get(3));
-        assertEquals(new Todo(41, 41, "#114", 14), todos.get(4));
-        assertEquals(new Todo(42, 42, "#115", 15), todos.get(5));
-        assertEquals(new Todo(50, 52, "#116", 16), todos.get(6));
-        assertEquals(new Todo(62, 62, "#117", 17), todos.get(7));
-        assertEquals(new Todo(63, 64, "#118", 18), todos.get(8));
-        assertEquals(new Todo(65, 65, "#119", 19), todos.get(9));
+        assertEquals(
+            new Todo(1, 1, "#900", 90),
+            todos.get(0)
+        );
+        assertEquals(
+            new Todo(3, 3, "#111", 11),
+            todos.get(1)
+        );
+        assertEquals(
+            new Todo(10, 11, "#112", 12),
+            todos.get(2)
+        );
+        assertEquals(
+            new Todo(20, 35, "#113", 13),
+            todos.get(3)
+        );
+        assertEquals(
+            new Todo(41, 41, "#114", 14),
+            todos.get(4)
+        );
+        assertEquals(
+            new Todo(42, 42, "#115", 15),
+            todos.get(5)
+        );
+        assertEquals(
+            new Todo(50, 52, "#116", 16),
+            todos.get(6)
+        );
+        assertEquals(
+            new Todo(62, 62, "#117", 17),
+            todos.get(7)
+        );
+        assertEquals(
+            new Todo(63, 64, "#118", 18),
+            todos.get(8)
+        );
+        assertEquals(
+            new Todo(65, 65, "#119", 19),
+            todos.get(9)
+        );
     }
 
+    /**
+     * TODOs in class TodosWithBodies are parsed correctly.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingTodoWithBody_ExpectBodyToBeProperlyParsed() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/TodosWithBodies.java");
+    public void todoWithBodyExpectBodyToBeProperlyParsed() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/TodosWithBodies.java"
+        );
         assertEquals(7, todos.size());
 
-        assertEquals("this is an example of a single-line todo.", todos.get(0).getBody());
-        assertEquals("this is an example of a multi-line todo.", todos.get(1).getBody());
-        assertEquals("small todo", todos.get(2).getBody());
-        assertEquals("this todo should only be three lines long", todos.get(3).getBody());
-        assertEquals("this body is in the next line...", todos.get(4).getBody());
-        assertEquals("", todos.get(5).getBody());
-        assertEquals("...body...", todos.get(6).getBody());
+        assertEquals(
+            "this is an example of a single-line todo.",
+            todos.get(0).getBody()
+        );
+        assertEquals(
+            "this is an example of a multi-line todo.",
+            todos.get(1).getBody()
+        );
+        assertEquals(
+            "small todo",
+            todos.get(2).getBody()
+        );
+        assertEquals(
+            "this todo should only be three lines long",
+            todos.get(3).getBody()
+        );
+        assertEquals(
+            "this body is in the next line...",
+            todos.get(4).getBody()
+        );
+        assertEquals(
+            "", todos.get(5).getBody()
+        );
+        assertEquals(
+            "...body...",
+            todos.get(6).getBody()
+        );
     }
 
+    /**
+     * Class ConfigurationProperties has no TODOs.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingConfigurationPropertiesClass_ExpectNoTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/ConfigurationPropertiesReportEndpoint.java");
+    public void configurationPropertiesClassExpectNoTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/ConfigurationPropertiesReportEndpoint.java"
+        );
         assertEquals(0, todos.size());
     }
 
+    /**
+     * HashMap class has no todos.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingHashMapClass_ExpectNoTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/HashMap.java");
+    public void hashMapClassExpectNoTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/HashMap.java"
+        );
         assertEquals(0, todos.size());
     }
 
+    /**
+     * AbstractStringBuilder has no TODOs.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingAbstractStringBuilder_ExpectNoTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/AbstractStringBuilder.java");
+    public void abstractStringBuilderExpectNoTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/AbstractStringBuilder.java"
+        );
         assertEquals(0, todos.size());
     }
 
-    @Test()
-    public void whenParsingIllegalTodosClass_ExpectNoTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/IllegalTodos.java");
+    /**
+     * IllegalTodos has no TODOs.
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void illegalTodosClassExpectNoTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/IllegalTodos.java"
+        );
         assertEquals(0, todos.size());
     }
 
+    /**
+     * PhonyClass has no TODOs.
+     * @throws IOException If something goes wrong.
+     */
     @Test
-    public void whenParsingPhonyClass_ExpectNoTodos() throws IOException {
-        List<Todo> todos = parser.parse("src/test/resources/PhonyClass.java");
+    public void phonyClassExpectNoTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/PhonyClass.java"
+        );
         assertEquals(0, todos.size());
     }
 }

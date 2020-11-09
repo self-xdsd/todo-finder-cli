@@ -30,6 +30,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Todo Parser.
+ * @version $Id$
+ * @since 0.0.1
+ */
 public class TodoParser {
 
     /**
