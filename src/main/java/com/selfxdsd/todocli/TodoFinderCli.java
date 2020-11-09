@@ -28,22 +28,29 @@ import java.nio.file.Paths;
 
 /**
  * The main program.
+ * @since 0.0.1
+ * @version $Id$
+ * @checkstyle HideUtilityClassConstructor (100 lines)
  */
-public class TodoCLI {
+public class TodoFinderCli {
 
     /**
      * The main method.
-     *
-     * @param args command line arguments; not used
+     * @param args Command line arguments.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         String root = ".";
-        System.out.println("Running TodoCLI v1.0 from directory '" + root + "'");
+        System.out.println(
+            "Running TodoCLI v1.0 from directory '" + root + "'"
+        );
 
         try {
             Files.walkFileTree(Paths.get(root), new TodoVisitor());
-        } catch (IOException e) {
-            System.err.println("Could not walk the given directory structure!");
+        } catch (final IOException ex) {
+            System.err.println(
+                "Could not walk the given directory structure!"
+            );
+            ex.printStackTrace();
         }
     }
 }
