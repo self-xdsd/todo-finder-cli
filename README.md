@@ -25,3 +25,7 @@ passes before making a PR. [Checkstyle](http://checkstyle.sourceforge.net/) will
 you're following our code style and guidelines.
 
 It's better to make changes on a separate branch (derived from ``master``), so you won't have to cherry pick commits in case your PR is rejected.
+
+## LICENSE
+
+This product's code is open source. However, the [LICENSE](https://github.com/self-xdsd/todo-finder-cli/blob/master/LICENSE) only allows you to read the code. Copying, downloading or forking the repo is strictly forbidden unless you are one of the project's contributors.
