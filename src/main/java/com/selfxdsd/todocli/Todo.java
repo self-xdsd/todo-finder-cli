@@ -22,7 +22,14 @@
  */
 package com.selfxdsd.todocli;
 
-public class Todo {
+/**
+ * Representation of a TODO or FIXME.
+ * @since 0.0.1
+ * @version $Id$
+ * @checkstyle AbbreviationAsWordInName (500 lines)
+ * @checkstyle FinalParameters (500 lines)
+ */
+public final class Todo {
 
     /**
      * The first line of the Todo.
@@ -56,11 +63,10 @@ public class Todo {
 
     /**
      * Creates a new Todo object.
-     *
-     * @param start         the starting line
-     * @param end           the ending line
-     * @param ticketID      the ticket ID
-     * @param estimatedTime the estimated time
+     * @param start The starting line
+     * @param end The ending line
+     * @param ticketID The ticket ID
+     * @param estimatedTime The estimated time
      */
     public Todo(int start, int end, String ticketID, int estimatedTime) {
         this.start = start;
@@ -71,10 +77,9 @@ public class Todo {
 
     /**
      * Creates a new Todo object.
-     *
-     * @param start the starting line
-     * @param end   the ending line
-     * @param body  the body
+     * @param start The starting line
+     * @param end The ending line
+     * @param body The body
      */
     public Todo(int start, int end, String body) {
         this.start = start;
@@ -84,8 +89,7 @@ public class Todo {
 
     /**
      * Gets the starting line.
-     *
-     * @return the starting line
+     * @return The starting line
      */
     public int getStart() {
         return start;
@@ -93,8 +97,7 @@ public class Todo {
 
     /**
      * Gets the ending line.
-     *
-     * @return the ending line
+     * @return The ending line
      */
     public int getEnd() {
         return end;
@@ -102,8 +105,7 @@ public class Todo {
 
     /**
      * Gets the body.
-     *
-     * @return the body
+     * @return The body
      */
     public String getBody() {
         return body;
@@ -111,8 +113,7 @@ public class Todo {
 
     /**
      * Gets the ticket ID.
-     *
-     * @return the ticket ID
+     * @return The ticket ID
      */
     public String getTicketID() {
         return ticketID;
@@ -120,8 +121,7 @@ public class Todo {
 
     /**
      * Gets the estimated time.
-     *
-     * @return the estimated time
+     * @return The estimated time
      */
     public int getEstimatedTime() {
         return estimatedTime;
@@ -129,8 +129,7 @@ public class Todo {
 
     /**
      * Gets the path of the file from which this Todo was extracted.
-     *
-     * @return the path
+     * @return The path
      */
     public String getPath() {
         return path;
@@ -138,67 +137,92 @@ public class Todo {
 
     /**
      * Sets the ticket ID.
-     *
-     * @param ticketID the ticket ID
+     * @param ticketID The ticket ID
      */
-    public void setTicketID(String ticketID) {
+    public void setTicketID(final String ticketID) {
         this.ticketID = ticketID;
     }
 
     /**
      * Sets the estimated time.
-     *
-     * @param estimatedTime the estimated time
+     * @param estimatedTime The estimated time
      */
-    public void setEstimatedTime(int estimatedTime) {
+    public void setEstimatedTime(final int estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 
     /**
      * Sets the path.
-     *
-     * @param path the path
+     * @param path The path
      */
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 
     /**
-     * Compares this to the given, other, Todo object. The method returns true if and only
-     * if the following conditions are satisfied: The objects have the same starting and ending
-     * line numbers; the objects have the same estimated time; the objects have the same ticket ID.
+     * Compares this to the given, other, Todo object.
+     * The method returns true if and only if the following conditions
+     * are satisfied:<br><br>
+     * The objects have the same starting and ending line numbers;<br>
+     * The objects have the same estimated time;<br>
+     * The objects have the same ticket ID.
      *
-     * @param o the object to compare this one to
-     * @return true if the objects are equal; false otherwise
+     * @param other The object to compare this one to
+     * @return True if the objects are equal; false otherwise
+     * @checkstyle ReturnCount (50 lines)
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
 
-        Todo todo = (Todo) o;
+        final Todo todo = (Todo) other;
 
-        if (start != todo.start) return false;
-        if (end != todo.end) return false;
-        if (estimatedTime != todo.estimatedTime) return false;
-        if (!ticketID.equals(todo.ticketID)) return false;
+        if (this.start != todo.start) {
+            return false;
+        }
+        if (this.end != todo.end) {
+            return false;
+        }
+        if (this.estimatedTime != todo.estimatedTime) {
+            return false;
+        }
+        if (!ticketID.equals(todo.ticketID)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = start;
-        result = 31 * result + end;
-        result = 31 * result + estimatedTime;
-        result = 31 * result + ticketID.hashCode();
+        int result = this.start;
+        result = 31 * result + this.end;
+        result = 31 * result + this.estimatedTime;
+        result = 31 * result + this.ticketID.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        String linesPart = start == end ? "Line: " + start : String.format("Lines: %d-%d", start, end);
+        final String linesPart;
+        if(this.start == this.end){
+            linesPart = "Line: " + this.start;
+        } else {
+            linesPart = String.format("Lines: %d-%d", this.start, this.end);
+        }
 
-        return String.format("TODO [%s, TicketID: %s, Estimated Time: %s, Body: '%s', Path: '%s']",
-                linesPart, ticketID, estimatedTime, body, path);
+        return String.format(
+            "TODO [%s, TicketID: %s, Estimated Time: %s, "
+            + "Body: '%s', Path: '%s']",
+            linesPart,
+            this.ticketID,
+            this.estimatedTime,
+            this.body,
+            this.path
+        );
     }
 }
