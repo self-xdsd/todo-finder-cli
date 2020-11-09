@@ -34,13 +34,15 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 /**
  * Performs the visit of the given directory structure and prints a list of
  * all extracted TODOs.
+ * @version $Id$
+ * @since 0.0.1
  */
-public class TodoVisitor extends SimpleFileVisitor<Path> {
+public final class TodoVisitor extends SimpleFileVisitor<Path> {
 
     /**
      * The parser used to extract the TODOs.
      */
-    private TodoParser parser;
+    private final TodoParser parser;
 
     /**
      * Creates a new TodoVisitor object.
@@ -50,30 +52,38 @@ public class TodoVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult preVisitDirectory(
+        final Path dir, final BasicFileAttributes attrs
+    ) throws IOException {
         return super.preVisitDirectory(dir, attrs);
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+    public FileVisitResult postVisitDirectory(
+        final Path dir, final IOException exc
+    ) throws IOException {
         return super.postVisitDirectory(dir, exc);
     }
 
     @Override
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-        String file = path.toString();
-        if (!file.endsWith(".java")) return CONTINUE;
-
-        List<Todo> todos = parser.parse(file);
-        if (todos.size() == 0) return CONTINUE;
-
-        System.out.printf("\nFound %d TODOs in %s:\n", todos.size(), file);
-
-        for (Todo todo : todos) {
-            System.out.println(todo);
+    public FileVisitResult visitFile(
+        final Path path,
+        final BasicFileAttributes attrs
+    ) throws IOException {
+        final String file = path.toString();
+        if (file.endsWith(".java")) {
+            final List<Todo> todos = parser.parse(file);
+            if (todos.size() > 0) {
+                System.out.printf(
+                    "\nFound %d TODOs in %s:\n",
+                    todos.size(), file
+                );
+                for (final Todo todo : todos) {
+                    System.out.println(todo);
+                }
+                System.out.println();
+            }
         }
-        System.out.println();
-
         return CONTINUE;
     }
 }
