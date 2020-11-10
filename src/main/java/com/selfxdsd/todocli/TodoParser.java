@@ -35,45 +35,28 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.0.1
  */
-public class TodoParser {
+public final class TodoParser {
 
     /**
-     * The list of all TODO markers.
+     * TODO Markers.
      */
-    private static final String[] MARKERS = new String[]{"@todo", "TODO", "@fixme", "FIXME"};
-
-    /**
-     * The replacement label for MARKERS.
-     */
-    private static final String MARKERS_LABEL = "<MARKERS>";
+    private static final String MARKERS = "@todo|TODO|@fixme|FIXME";
 
     /**
      * Regex used for matching a single-line comment.
      */
-    private static String SINGLE_LINE_REGEX = "^(\\s*//\\s*)(" + MARKERS_LABEL + ").*$";
+    private final String singleLineRegex;
 
 
     /**
      * Regex used for matching a multi-line comment.
      */
-    private static String MULTI_LINE_REGEX = "^(\\s*[*]\\s*)(" + MARKERS_LABEL + ").*$";
-
+    private final String multiLineRegex;
 
     /**
      * Pattern used for matching the body of a TODO in a multi-line comment.
      */
-    private static Pattern MULTI_LINE_PATTERN = Pattern.compile("(\\s*[*])(\\s\\s)(.*)");
-
-    static {
-        StringBuilder sb = new StringBuilder();
-        for (String todo : MARKERS) {
-            sb.append(todo).append("|");
-        }
-        String markersGroup = sb.substring(0, sb.length() - 1);
-
-        SINGLE_LINE_REGEX = SINGLE_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
-        MULTI_LINE_REGEX = MULTI_LINE_REGEX.replace(MARKERS_LABEL, markersGroup);
-    }
+    private final Pattern multiLinePattern;
 
     /**
      * Index of the currently parsed line.
@@ -84,12 +67,18 @@ public class TodoParser {
      * Creates a new TodoParser object.
      */
     public TodoParser() {
+        this.singleLineRegex = "^(\\s*//\\s*)(" + MARKERS + ").*$";
+        this.multiLineRegex = "^(\\s*[*]\\s*)(" + MARKERS + ").*$";
+        this.multiLinePattern = Pattern.compile("(\\s*[*])(\\s\\s)(.*)");
     }
 
     /**
      * Finds and returns a list of all TODOs found in the file given its path.
+     * @param path Path to the file being parsed.
+     * @return List of found TODOs.
+     * @throws IOException If something goes wrong.
      */
-    public List<Todo> parse(String path) throws IOException {
+    public List<Todo> parse(final String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
         List<Todo> todos = new ArrayList<>();
 
@@ -97,21 +86,29 @@ public class TodoParser {
             String line = lines.get(currentIndex);
 
             int headerIndex = getHeaderIndex(line);
-            if (headerIndex == -1) continue;
+            if (headerIndex == -1) {
+                continue;
+            }
 
-            String[] parts = line.substring(headerIndex).trim().split("\\s", 2);
-            if (parts[0].isEmpty()) continue;
+            final String[] parts = line.substring(headerIndex)
+                .trim().split("\\s", 2);
+            if (parts[0].isEmpty()) {
+                continue;
+            }
 
-            String header = parts[0].trim();
-            String body = parts.length == 2 ? parts[1].trim() : "";
+            final String header = parts[0].trim();
+            final String body;
+            if (parts.length == 2) {
+                body = parts[1].trim();
+            } else {
+                body = "";
+            }
 
             Todo todo;
-            if (line.matches(SINGLE_LINE_REGEX)) {
-                todo = parseSingleLineTodo(body);
-
-            } else if (line.matches(MULTI_LINE_REGEX)) {
+            if (line.matches(this.singleLineRegex)) {
+                todo = new Todo(currentIndex + 1, currentIndex + 1, body);
+            } else if (line.matches(this.multiLineRegex)) {
                 todo = parseMultiLineTodo(lines, body);
-
             } else {
                 continue;
             }
@@ -123,59 +120,55 @@ public class TodoParser {
     }
 
     /**
-     * Parses the current line of the input file and extracts the TODO object.
-     *
-     * @param body the TODO's body; could be empty
-     * @return the extracted TODO object
-     */
-    private Todo parseSingleLineTodo(String body) {
-        return new Todo(currentIndex + 1, currentIndex + 1, body);
-    }
-
-    /**
      * Parses multiple lines of the input file and extracts the TODO object.
-     *
-     * @param body the TODO's body; could be empty
-     * @return the extracted TODO object
+     * @param lines Lines of the multi-line TODO.
+     * @param body The TODO's body; could be empty
+     * @return The extracted TODO object
      */
-    private Todo parseMultiLineTodo(List<String> lines, String body) {
+    private Todo parseMultiLineTodo(
+        final List<String> lines,
+        final String body
+    ) {
         int start = currentIndex + 1;
-        StringBuilder sb = new StringBuilder(body);
-
+        StringBuilder bodyBuilder = new StringBuilder(body);
         while (true) {
             String line = lines.get(++currentIndex);
+            Matcher matcher = this.multiLinePattern.matcher(line);
+            if (matcher.find()) {
+                String bodyContinuation = matcher.group(3);
 
-            Matcher m = MULTI_LINE_PATTERN.matcher(line);
-
-            if (m.find()) {
-                body = m.group(3);
-
-                if (sb.length() > 0) {
-                    sb.append(" ");
+                if (bodyBuilder.length() > 0) {
+                    bodyBuilder.append(" ");
                 }
-                sb.append(body);
+                bodyBuilder.append(bodyContinuation);
 
             } else {
                 currentIndex--;
                 break;
             }
         }
-
-        return new Todo(start, currentIndex + 1, sb.toString());
+        return new Todo(start, currentIndex + 1, bodyBuilder.toString());
     }
 
     /**
      * Sets the remaining TODO fields: ticket ID, estimated time, and path.
-     *
-     * @param todo   the TODO object to update
-     * @param header the header, containing ticket ID and estimated time
-     * @param path   the path of the file in which the TODO was found
+     * @param todo The TODO object to update.
+     * @param header The header, containing ticket ID and estimated time.
+     * @param path The path of the file in which the TODO was found.
      */
-    private void setRemainingTodoFields(Todo todo, String header, String path) {
-        String[] parts = header.split(":");
+    private void setRemainingTodoFields(
+        final Todo todo,
+        final String header,
+        final String path
+    ) {
+        final String[] parts = header.split(":");
 
         todo.setTicketID(parts[0]);
-        todo.setEstimatedTime(getEstimatedTimeAsInt(parts[1]));
+        todo.setEstimatedTime(
+            Integer.parseInt(
+                parts[1].replaceAll("[A-Za-z]+", "")
+            )
+        );
         todo.setPath(path);
     }
 
@@ -184,27 +177,19 @@ public class TodoParser {
      * the index of its header, i.e. of the header's first character.
      * Header consists of the ticker number and the estimated time.
      *
-     * @param line the source code line to check
-     * @return index of header or -1 if the line contains no TODO
+     * @param line The source code line to check
+     * @return Index of header or -1 if the line contains no TODO
      */
-    private static int getHeaderIndex(String line) {
-        for (String todo : MARKERS) {
+    private int getHeaderIndex(final String line) {
+        int index = -1;
+        for (final String todo : MARKERS.split("\\|")) {
             int todoIndex = line.indexOf(todo);
             if (todoIndex != -1) {
-                return todoIndex + todo.length();
+                index = todoIndex + todo.length();
+                break;
             }
         }
-        return -1;
+        return index;
     }
 
-    /**
-     * Removes any trailing characters (such as "min" or "minutes") and returns the
-     * proper integer value of the estimated time
-     *
-     * @param estimatedTime the estimated time, as extracted from the header
-     * @return estimated time in minutes
-     */
-    private static int getEstimatedTimeAsInt(String estimatedTime) {
-        return Integer.parseInt(estimatedTime.replaceAll("[A-Za-z]+", ""));
-    }
 }
