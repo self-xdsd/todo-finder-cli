@@ -10,7 +10,7 @@ env:
   JAVA_HOME: /usr/lib/jvm/java-11-openjdk
 merge:
   script: |-
-    mvn clean install # -Pcheckstyle,itcases
+    mvn clean install -Pcheckstyle
 deploy:
   script: |-
     echo 'Nothing to deploy'
