@@ -35,13 +35,13 @@ public interface TodosSerializer {
 
 
     /**
-     * Adds a todo or todos that will for serialization.
+     * Adds a todo or todos for serialization.
      * @param todo Todo(s) in question.
      */
     void add(final Todo... todo);
 
     /**
-     * Adds a collection of todos that for serialization.
+     * Adds a collection of todos for serialization.
      * @param todos Collection of todos.
      */
     default void addAll(final Collection<Todo> todos) {
