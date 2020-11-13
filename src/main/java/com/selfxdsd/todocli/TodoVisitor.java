@@ -45,9 +45,21 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     private final TodoParser parser;
 
     /**
-     * Creates a new TodoVisitor object.
+     * Todos serializer.
      */
-    public TodoVisitor() {
+    private final TodosSerializer serializer;
+
+    /**
+     * Root path.
+     */
+    private Path root;
+
+    /**
+     * Creates a new TodoVisitor object.
+     * @param serializer Todos serializer.
+     */
+    public TodoVisitor(final TodosSerializer serializer) {
+        this.serializer = serializer;
         this.parser = new TodoParser();
     }
 
@@ -55,6 +67,9 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult preVisitDirectory(
         final Path dir, final BasicFileAttributes attrs
     ) throws IOException {
+        if (root == null) {
+            root = dir;
+        }
         return super.preVisitDirectory(dir, attrs);
     }
 
@@ -62,6 +77,10 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult postVisitDirectory(
         final Path dir, final IOException exc
     ) throws IOException {
+        if (dir.equals(root)) {
+            // scanning root has finished.
+            this.serializer.serialize();
+        }
         return super.postVisitDirectory(dir, exc);
     }
 
@@ -82,6 +101,7 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
                     System.out.println(todo);
                 }
                 System.out.println();
+                this.serializer.addAll(todos);
             }
         }
         return CONTINUE;

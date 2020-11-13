@@ -22,37 +22,43 @@
  */
 package com.selfxdsd.todocli;
 
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.Objects;
 
 /**
- * The main program.
- * @since 0.0.1
+ * Unit tests for {@link TodoVisitor}.
+ * @author criske
  * @version $Id$
- * @checkstyle HideUtilityClassConstructor (100 lines)
+ * @since 0.0.1
  */
-public class TodoFinderCli {
+public final class TodoVisitorTestCase {
 
     /**
-     * The main method.
-     * @param args Command line arguments.
+     * TodoVisitor should call {@link TodosSerializer#serialize()} once
+     * the files and sub-folders scanning has finished.
+     * @throws IOException If something goes wrong.
+     * @throws URISyntaxException If something goes wrong.
      */
-    public static void main(final String[] args) {
-        String root = ".";
-        System.out.println(
-            "Running TodoCLI v1.0 from directory '" + root + "'"
-        );
+    @Test
+    public void callsSerializeOnce() throws IOException, URISyntaxException {
+        final TodosSerializer serializer = Mockito.mock(TodosSerializer.class);
+        final URI root = Objects.requireNonNull(
+            TodoVisitorTestCase.class
+                .getClassLoader()
+                .getResource(".")
+        ).toURI();
+        Files.walkFileTree(Path.of(root), new TodoVisitor(serializer));
 
-        try {
-            Files.walkFileTree(Paths.get(root), new TodoVisitor(
-                new JsonTodosSerializer()
-            ));
-        } catch (final IOException ex) {
-            System.err.println(
-                "Could not walk the given directory structure!"
-            );
-            ex.printStackTrace();
-        }
+        Mockito.verify(serializer, Mockito.times(1))
+            .serialize();
+        Mockito.verify(serializer, Mockito.atLeast(1))
+            .addAll(Mockito.anyCollection());
     }
 }

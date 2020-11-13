@@ -22,37 +22,35 @@
  */
 package com.selfxdsd.todocli;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.URI;
+import java.util.Collection;
 
 /**
- * The main program.
+ * Serializer for {@link Todo}.
+ * @author criske
  * @since 0.0.1
  * @version $Id$
- * @checkstyle HideUtilityClassConstructor (100 lines)
  */
-public class TodoFinderCli {
+public interface TodosSerializer {
+
 
     /**
-     * The main method.
-     * @param args Command line arguments.
+     * Adds a todo or todos that will for serialization.
+     * @param todo Todo(s) in question.
      */
-    public static void main(final String[] args) {
-        String root = ".";
-        System.out.println(
-            "Running TodoCLI v1.0 from directory '" + root + "'"
-        );
+    void add(final Todo... todo);
 
-        try {
-            Files.walkFileTree(Paths.get(root), new TodoVisitor(
-                new JsonTodosSerializer()
-            ));
-        } catch (final IOException ex) {
-            System.err.println(
-                "Could not walk the given directory structure!"
-            );
-            ex.printStackTrace();
-        }
+    /**
+     * Adds a collection of todos that for serialization.
+     * @param todos Collection of todos.
+     */
+    default void addAll(final Collection<Todo> todos) {
+        this.add(todos.toArray(new Todo[todos.size()]));
     }
+
+    /**
+     * Serializes the added todos.
+     * @return Resource where todos are serialized (ex: a local file).
+     */
+    URI serialize();
 }
