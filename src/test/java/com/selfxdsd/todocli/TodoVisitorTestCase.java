@@ -61,4 +61,20 @@ public final class TodoVisitorTestCase {
         Mockito.verify(serializer, Mockito.atLeast(1))
             .addAll(Mockito.anyCollection());
     }
+
+    /**
+     * TodoVisitor allows js files to be parsed for todos.
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void shouldAllowJsFilesToBeParsedForTodos() throws IOException {
+        final TodosSerializer serializer = Mockito.mock(TodosSerializer.class);
+        Files.walkFileTree(Path.of("src/test/resources/js"),
+            new TodoVisitor(serializer));
+
+        Mockito.verify(serializer, Mockito.times(1))
+            .serialize();
+        Mockito.verify(serializer, Mockito.atLeast(1))
+            .addAll(Mockito.anyCollection());
+    }
 }

@@ -90,7 +90,7 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
         final BasicFileAttributes attrs
     ) throws IOException {
         final String file = path.toString();
-        if (file.endsWith(".java")) {
+        if (file.endsWith(".java") || file.endsWith(".js")) {
             final List<Todo> todos = parser.parse(file);
             if (todos.size() > 0) {
                 System.out.printf(
