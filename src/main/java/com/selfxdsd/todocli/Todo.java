@@ -22,6 +22,8 @@
  */
 package com.selfxdsd.todocli;
 
+import java.util.Objects;
+
 /**
  * Representation of a TODO or FIXME.
  *
@@ -207,20 +209,26 @@ public final class Todo {
      * The objects have the same estimated time;<br>
      * The objects have the same ticket ID.
      *
-     * @param o The object to compare this one to
+     * @param other The object to compare this one to
      * @return True if the objects are equal; false otherwise
      * @checkstyle ReturnCount (50 lines)
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
 
-        Todo todo = (Todo) o;
+        Todo todo = (Todo) other;
 
-        if (estimatedTime != todo.estimatedTime) return false;
-        if (body != null ? !body.equals(todo.body) : todo.body != null) return false;
-        return ticketID.equals(todo.ticketID);
+        if (estimatedTime == todo.estimatedTime) {
+            if (Objects.equals(body, todo.body)) {
+                if (ticketID.equals(todo.ticketID)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
