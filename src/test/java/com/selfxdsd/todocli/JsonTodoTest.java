@@ -5,8 +5,17 @@ import org.junit.Test;
 
 import javax.json.JsonObject;
 
+/**
+ * Unit tests for {@link JsonTodo}.
+ *
+ * @version $Id$
+ * @since 0.0.1
+ */
 public class JsonTodoTest {
 
+    /**
+     * Existing Todo object should be successfully converted into Json.
+     */
     @Test
     public void whenCallingCtorOfJsonTodoExpectJsonObject() {
         Todo todo = new Todo(1, 2, "#1138", 60);
