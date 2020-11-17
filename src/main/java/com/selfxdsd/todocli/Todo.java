@@ -31,6 +31,8 @@ import java.util.Objects;
  * @checkstyle AbbreviationAsWordInName (500 lines)
  * @checkstyle FinalParameters (500 lines)
  * @since 0.0.1
+ * @todo #4:60min  Add interface Todos which should represent an iterable of Todo objects.
+ *  Afterwards, add class JsonTodos, which should represent the TODOs as JsonArray.
  */
 public final class Todo {
 
@@ -138,12 +140,13 @@ public final class Todo {
     }
 
     /**
-     * Gets the body.
+     * Gets the body. If the body has not been set, the method
+     * returns an empty string.
      *
      * @return The body
      */
     public String getBody() {
-        return body;
+        return body == null ? "" : body;
     }
 
     /**
