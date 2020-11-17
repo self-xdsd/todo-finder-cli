@@ -14,6 +14,7 @@ import java.util.stream.Stream;
  * @checkstyle FinalParameters (500 lines)
  * @checkstyle LineLength (500 lines)
  * @checkstyle ParameterName (500 lines)
+ * @checkstyle DesignForExtension (500 lines)
  */
 public abstract class AbstractJsonArray implements JsonArray {
 

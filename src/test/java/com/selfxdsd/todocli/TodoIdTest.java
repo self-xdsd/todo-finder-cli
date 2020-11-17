@@ -6,9 +6,7 @@ import org.junit.Test;
 /**
  * Tests for the added ID in the {@link Todo} class.
  */
-public final class TodoIDTest {
-
-    // ID tests
+public final class TodoIdTest {
 
     /**
      * Checks if Todos with different bodies will have different IDs.
@@ -26,10 +24,10 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithDifferentEstimationsExpectDifferentIDs() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#314", 40, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#314", 40, "Hello");
 
-        Assert.assertNotEquals(todo1.getID(), todo2.getID());
+        Assert.assertNotEquals(first.getID(), second.getID());
     }
 
     /**
@@ -37,10 +35,10 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithDifferentTicketIDsExpectDifferentIDs() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#315", 30, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#315", 30, "Hello");
 
-        Assert.assertNotEquals(todo1.getID(), todo2.getID());
+        Assert.assertNotEquals(first.getID(), second.getID());
     }
 
     /**
@@ -48,23 +46,21 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithSameTicketAndEstimationAndBodyExpectSameIDs() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#314", 30, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#314", 30, "Hello");
 
-        Assert.assertEquals(todo1.getID(), todo2.getID());
+        Assert.assertEquals(first.getID(), second.getID());
     }
-
-    // Equals tests
 
     /**
      * Checks if Todos with different bodies will be different.
      */
     @Test
     public void todosWithDifferentBodiesExpectNotEqual() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#314", 30, "Olleh");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#314", 30, "Olleh");
 
-        Assert.assertNotEquals(todo1, todo2);
+        Assert.assertNotEquals(first, second);
     }
 
     /**
@@ -72,10 +68,10 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithDifferentEstimationsExpectNotEqual() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#314", 40, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#314", 40, "Hello");
 
-        Assert.assertNotEquals(todo1, todo2);
+        Assert.assertNotEquals(first, second);
     }
 
     /**
@@ -83,10 +79,10 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithDifferentTicketIDsExpectNotEqual() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#315", 30, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#315", 30, "Hello");
 
-        Assert.assertNotEquals(todo1, todo2);
+        Assert.assertNotEquals(first, second);
     }
 
     /**
@@ -94,9 +90,9 @@ public final class TodoIDTest {
      */
     @Test
     public void todosWithSameTicketAndEstimationAndBodyExpectEqual() {
-        Todo todo1 = new Todo(1, 2, "#314", 30, "Hello");
-        Todo todo2 = new Todo(1, 2, "#314", 30, "Hello");
+        Todo first = new Todo(1, 2, "#314", 30, "Hello");
+        Todo second = new Todo(1, 2, "#314", 30, "Hello");
 
-        Assert.assertEquals(todo1, todo2);
+        Assert.assertEquals(first, second);
     }
 }

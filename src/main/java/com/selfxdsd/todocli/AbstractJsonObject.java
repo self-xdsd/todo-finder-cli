@@ -40,6 +40,7 @@ import java.util.function.Supplier;
  * @checkstyle FinalParameters (500 lines)
  * @checkstyle LineLength (500 lines)
  * @checkstyle ParameterName (500 lines)
+ * @checkstyle DesignForExtension (500 lines)
  */
 public abstract class AbstractJsonObject implements JsonObject {
 

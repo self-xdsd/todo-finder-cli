@@ -31,8 +31,9 @@ import java.util.Objects;
  * @checkstyle AbbreviationAsWordInName (500 lines)
  * @checkstyle FinalParameters (500 lines)
  * @since 0.0.1
- * @todo #4:60min  Add interface Todos which should represent an iterable of Todo objects.
- *  Afterwards, add class JsonTodos, which should represent the TODOs as JsonArray.
+ * @todo #4:60min  Add interface Todos which should represent
+ *  an iterable of Todo objects. Afterwards, add class JsonTodos,
+ *  which should represent the TODOs as JsonArray.
  */
 public final class Todo {
 
@@ -69,9 +70,9 @@ public final class Todo {
     /**
      * Creates a new Todo object.
      *
-     * @param start         The starting line
-     * @param end           The ending line
-     * @param ticketID      The ticket ID
+     * @param start The starting line
+     * @param end The ending line
+     * @param ticketID The ticket ID
      * @param estimatedTime The estimated time
      */
     public Todo(int start, int end, String ticketID, int estimatedTime) {
@@ -84,13 +85,16 @@ public final class Todo {
     /**
      * Creates a new Todo object.
      *
-     * @param start         The starting line
-     * @param end           The ending line
-     * @param ticketID      The ticket ID
+     * @param start The starting line
+     * @param end The ending line
+     * @param ticketID The ticket ID
      * @param estimatedTime The estimated time
-     * @param body          The body
+     * @param body The body
      */
-    public Todo(int start, int end, String ticketID, int estimatedTime, String body) {
+    public Todo(
+        int start, int end, String ticketID,
+        int estimatedTime, String body
+    ) {
         this.start = start;
         this.end = end;
         this.ticketID = ticketID;
@@ -102,8 +106,8 @@ public final class Todo {
      * Creates a new Todo object.
      *
      * @param start The starting line
-     * @param end   The ending line
-     * @param body  The body
+     * @param end The ending line
+     * @param body The body
      */
     public Todo(int start, int end, String body) {
         this.start = start;
@@ -114,8 +118,7 @@ public final class Todo {
     /**
      * Returns the unique identifier of this Todo.
      * Todo's ID depends on the body, originating ticket, and estimation time.
-     *
-     * @return the ID of this Todo object
+     * @return ID of this Todo object.
      */
     public long getID() {
         return hashCode();
@@ -123,7 +126,6 @@ public final class Todo {
 
     /**
      * Gets the starting line.
-     *
      * @return The starting line
      */
     public int getStart() {
@@ -132,7 +134,6 @@ public final class Todo {
 
     /**
      * Gets the ending line.
-     *
      * @return The ending line
      */
     public int getEnd() {
@@ -146,7 +147,13 @@ public final class Todo {
      * @return The body
      */
     public String getBody() {
-        return body == null ? "" : body;
+        final String body;
+        if(this.body == null) {
+            body = "";
+        } else {
+            body = this.body;
+        }
+        return body;
     }
 
     /**
@@ -218,11 +225,13 @@ public final class Todo {
      */
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
-
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
         Todo todo = (Todo) other;
-
         if (estimatedTime == todo.estimatedTime) {
             if (Objects.equals(body, todo.body)) {
                 if (ticketID.equals(todo.ticketID)) {
@@ -230,13 +239,17 @@ public final class Todo {
                 }
             }
         }
-
         return false;
     }
 
     @Override
     public int hashCode() {
-        int result = body != null ? body.hashCode() : 0;
+        int result;
+        if(this.body != null) {
+            result = this.body.hashCode();
+        } else {
+            result = 0;
+        }
         result = 31 * result + ticketID.hashCode();
         result = 31 * result + estimatedTime;
         return result;

@@ -11,7 +11,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.0.1
  */
-public class JsonTodoTest {
+public final class JsonTodoTest {
 
     /**
      * Existing Todo object should be successfully converted into Json.
