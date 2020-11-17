@@ -22,12 +22,15 @@
  */
 package com.selfxdsd.todocli;
 
+import java.util.Objects;
+
 /**
  * Representation of a TODO or FIXME.
- * @since 0.0.1
+ *
  * @version $Id$
  * @checkstyle AbbreviationAsWordInName (500 lines)
  * @checkstyle FinalParameters (500 lines)
+ * @since 0.0.1
  */
 public final class Todo {
 
@@ -63,9 +66,10 @@ public final class Todo {
 
     /**
      * Creates a new Todo object.
-     * @param start The starting line
-     * @param end The ending line
-     * @param ticketID The ticket ID
+     *
+     * @param start         The starting line
+     * @param end           The ending line
+     * @param ticketID      The ticket ID
      * @param estimatedTime The estimated time
      */
     public Todo(int start, int end, String ticketID, int estimatedTime) {
@@ -77,9 +81,27 @@ public final class Todo {
 
     /**
      * Creates a new Todo object.
+     *
+     * @param start         The starting line
+     * @param end           The ending line
+     * @param ticketID      The ticket ID
+     * @param estimatedTime The estimated time
+     * @param body          The body
+     */
+    public Todo(int start, int end, String ticketID, int estimatedTime, String body) {
+        this.start = start;
+        this.end = end;
+        this.ticketID = ticketID;
+        this.estimatedTime = estimatedTime;
+        this.body = body;
+    }
+
+    /**
+     * Creates a new Todo object.
+     *
      * @param start The starting line
-     * @param end The ending line
-     * @param body The body
+     * @param end   The ending line
+     * @param body  The body
      */
     public Todo(int start, int end, String body) {
         this.start = start;
@@ -88,7 +110,18 @@ public final class Todo {
     }
 
     /**
+     * Returns the unique identifier of this Todo.
+     * Todo's ID depends on the body, originating ticket, and estimation time.
+     *
+     * @return the ID of this Todo object
+     */
+    public long getID() {
+        return hashCode();
+    }
+
+    /**
      * Gets the starting line.
+     *
      * @return The starting line
      */
     public int getStart() {
@@ -97,6 +130,7 @@ public final class Todo {
 
     /**
      * Gets the ending line.
+     *
      * @return The ending line
      */
     public int getEnd() {
@@ -105,6 +139,7 @@ public final class Todo {
 
     /**
      * Gets the body.
+     *
      * @return The body
      */
     public String getBody() {
@@ -113,6 +148,7 @@ public final class Todo {
 
     /**
      * Gets the ticket ID.
+     *
      * @return The ticket ID
      */
     public String getTicketID() {
@@ -121,6 +157,7 @@ public final class Todo {
 
     /**
      * Gets the estimated time.
+     *
      * @return The estimated time
      */
     public int getEstimatedTime() {
@@ -129,6 +166,7 @@ public final class Todo {
 
     /**
      * Gets the path of the file from which this Todo was extracted.
+     *
      * @return The path
      */
     public String getPath() {
@@ -137,6 +175,7 @@ public final class Todo {
 
     /**
      * Sets the ticket ID.
+     *
      * @param ticketID The ticket ID
      */
     public void setTicketID(final String ticketID) {
@@ -145,6 +184,7 @@ public final class Todo {
 
     /**
      * Sets the estimated time.
+     *
      * @param estimatedTime The estimated time
      */
     public void setEstimatedTime(final int estimatedTime) {
@@ -153,11 +193,13 @@ public final class Todo {
 
     /**
      * Sets the path.
+     *
      * @param path The path
      */
     public void setPath(final String path) {
         this.path = path;
     }
+
 
     /**
      * Compares this to the given, other, Todo object.
@@ -172,57 +214,48 @@ public final class Todo {
      * @checkstyle ReturnCount (50 lines)
      */
     @Override
-    public boolean equals(final Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other == null || getClass() != other.getClass()) {
-            return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+
+        Todo todo = (Todo) other;
+
+        if (estimatedTime == todo.estimatedTime) {
+            if (Objects.equals(body, todo.body)) {
+                if (ticketID.equals(todo.ticketID)) {
+                    return true;
+                }
+            }
         }
 
-        final Todo todo = (Todo) other;
-
-        if (this.start != todo.start) {
-            return false;
-        }
-        if (this.end != todo.end) {
-            return false;
-        }
-        if (this.estimatedTime != todo.estimatedTime) {
-            return false;
-        }
-        if (!ticketID.equals(todo.ticketID)) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     @Override
     public int hashCode() {
-        int result = this.start;
-        result = 31 * result + this.end;
-        result = 31 * result + this.estimatedTime;
-        result = 31 * result + this.ticketID.hashCode();
+        int result = body != null ? body.hashCode() : 0;
+        result = 31 * result + ticketID.hashCode();
+        result = 31 * result + estimatedTime;
         return result;
     }
 
     @Override
     public String toString() {
         final String linesPart;
-        if(this.start == this.end){
+        if (this.start == this.end) {
             linesPart = "Line: " + this.start;
         } else {
             linesPart = String.format("Lines: %d-%d", this.start, this.end);
         }
 
         return String.format(
-            "TODO [%s, TicketID: %s, Estimated Time: %s, "
-            + "Body: '%s', Path: '%s']",
-            linesPart,
-            this.ticketID,
-            this.estimatedTime,
-            this.body,
-            this.path
+                "TODO [%s, TicketID: %s, Estimated Time: %s, "
+                        + "Body: '%s', Path: '%s']",
+                linesPart,
+                this.ticketID,
+                this.estimatedTime,
+                this.body,
+                this.path
         );
     }
 }
