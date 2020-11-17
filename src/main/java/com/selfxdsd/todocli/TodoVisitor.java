@@ -22,6 +22,8 @@
  */
 package com.selfxdsd.todocli;
 
+import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -34,6 +36,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 /**
  * Performs the visit of the given directory structure and prints a list of
  * all extracted TODOs.
+ *
  * @version $Id$
  * @since 0.0.1
  */
@@ -55,17 +58,25 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     private Path root;
 
     /**
-     * Creates a new TodoVisitor object.
-     * @param serializer Todos serializer.
+     * Logger.
      */
-    public TodoVisitor(final TodosSerializer serializer) {
+    private Logger logger;
+
+    /**
+     * Creates a new TodoVisitor object.
+     *
+     * @param serializer Todos serializer.
+     * @param logger Logger object.
+     */
+    public TodoVisitor(final TodosSerializer serializer, final Logger logger) {
         this.serializer = serializer;
         this.parser = new TodoParser();
+        this.logger = logger;
     }
 
     @Override
     public FileVisitResult preVisitDirectory(
-        final Path dir, final BasicFileAttributes attrs
+            final Path dir, final BasicFileAttributes attrs
     ) throws IOException {
         if (root == null) {
             root = dir;
@@ -75,7 +86,7 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult postVisitDirectory(
-        final Path dir, final IOException exc
+            final Path dir, final IOException exc
     ) throws IOException {
         if (dir.equals(root)) {
             // scanning root has finished.
@@ -86,24 +97,43 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(
-        final Path path,
-        final BasicFileAttributes attrs
+            final Path path,
+            final BasicFileAttributes attrs
     ) throws IOException {
         final String file = path.toString();
         if (file.endsWith(".java") || file.endsWith(".js")) {
             final List<Todo> todos = parser.parse(file);
+
             if (todos.size() > 0) {
-                System.out.printf(
-                    "\nFound %d TODOs in %s:\n",
-                    todos.size(), file
-                );
-                for (final Todo todo : todos) {
-                    System.out.println(todo);
-                }
-                System.out.println();
-                this.serializer.addAll(todos);
+                log("Found {} TODOs in {}:", todos.size(), file);
             }
+
+            for (int i = 0; i < todos.size(); i++) {
+                Todo todo = todos.get(i);
+
+                String suffix;
+                if (i == todos.size() - 1) {
+                    suffix = "\n";
+                } else {
+                    suffix = "";
+                }
+                log(todo.toString() + suffix);
+            }
+
+            this.serializer.addAll(todos);
         }
         return CONTINUE;
+    }
+
+    /**
+     * A helper logging method.
+     *
+     * @param format The format
+     * @param arguments The arguments
+     */
+    private void log(final String format, final Object... arguments) {
+        if (logger != null) {
+            logger.info(format, arguments);
+        }
     }
 }

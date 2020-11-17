@@ -22,35 +22,45 @@
  */
 package com.selfxdsd.todocli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
  * The main program.
- * @since 0.0.1
+ *
  * @version $Id$
  * @checkstyle HideUtilityClassConstructor (100 lines)
+ * @since 0.0.1
  */
 public class TodoFinderCli {
 
     /**
+     * The main logger.
+     */
+    private static Logger logger;
+
+    /**
      * The main method.
+     *
      * @param args Command line arguments.
      */
     public static void main(final String[] args) {
+        logger = LoggerFactory.getLogger(TodoFinderCli.class);
+
         String root = ".";
-        System.out.println(
-            "Running TodoCLI v1.0 from directory '" + root + "'"
-        );
+        logger.info("Running TodoCLI v1.0 from directory '" + root + "'\n");
 
         try {
             Files.walkFileTree(Paths.get(root), new TodoVisitor(
-                new JsonTodosSerializer()
+                    new JsonTodosSerializer(), logger
             ));
         } catch (final IOException ex) {
             System.err.println(
-                "Could not walk the given directory structure!"
+                    "Could not walk the given directory structure!"
             );
             ex.printStackTrace();
         }

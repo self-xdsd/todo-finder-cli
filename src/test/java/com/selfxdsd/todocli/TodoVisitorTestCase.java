@@ -34,6 +34,7 @@ import java.util.Objects;
 
 /**
  * Unit tests for {@link TodoVisitor}.
+ *
  * @author criske
  * @version $Id$
  * @since 0.0.1
@@ -43,38 +44,40 @@ public final class TodoVisitorTestCase {
     /**
      * TodoVisitor should call {@link TodosSerializer#serialize()} once
      * the files and sub-folders scanning has finished.
-     * @throws IOException If something goes wrong.
+     *
+     * @throws IOException        If something goes wrong.
      * @throws URISyntaxException If something goes wrong.
      */
     @Test
     public void callsSerializeOnce() throws IOException, URISyntaxException {
         final TodosSerializer serializer = Mockito.mock(TodosSerializer.class);
         final URI root = Objects.requireNonNull(
-            TodoVisitorTestCase.class
-                .getClassLoader()
-                .getResource(".")
+                TodoVisitorTestCase.class
+                        .getClassLoader()
+                        .getResource(".")
         ).toURI();
-        Files.walkFileTree(Path.of(root), new TodoVisitor(serializer));
+        Files.walkFileTree(Path.of(root), new TodoVisitor(serializer, null));
 
         Mockito.verify(serializer, Mockito.times(1))
-            .serialize();
+                .serialize();
         Mockito.verify(serializer, Mockito.atLeast(1))
-            .addAll(Mockito.anyCollection());
+                .addAll(Mockito.anyCollection());
     }
 
     /**
      * TodoVisitor allows js files to be parsed for todos.
+     *
      * @throws IOException If something goes wrong.
      */
     @Test
     public void shouldAllowJsFilesToBeParsedForTodos() throws IOException {
         final TodosSerializer serializer = Mockito.mock(TodosSerializer.class);
         Files.walkFileTree(Path.of("src/test/resources/js"),
-            new TodoVisitor(serializer));
+                new TodoVisitor(serializer, null));
 
         Mockito.verify(serializer, Mockito.times(1))
-            .serialize();
+                .serialize();
         Mockito.verify(serializer, Mockito.atLeast(1))
-            .addAll(Mockito.anyCollection());
+                .addAll(Mockito.anyCollection());
     }
 }
