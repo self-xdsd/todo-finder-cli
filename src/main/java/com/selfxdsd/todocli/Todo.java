@@ -22,9 +22,6 @@
  */
 package com.selfxdsd.todocli;
 
-// @todo #4:60min  Add interface Todos which should represent an iterable of Todo objects.
-//  Afterwards, add class JsonTodos, which should represent the TODOs as JsonArray.
-
 /**
  * Representation of a TODO or FIXME.
  *
@@ -32,6 +29,8 @@ package com.selfxdsd.todocli;
  * @checkstyle AbbreviationAsWordInName (500 lines)
  * @checkstyle FinalParameters (500 lines)
  * @since 0.0.1
+ * @todo #4:60min  Add interface Todos which should represent an iterable of Todo objects.
+ *  Afterwards, add class JsonTodos, which should represent the TODOs as JsonArray.
  */
 public final class Todo {
 
