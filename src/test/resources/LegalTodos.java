@@ -1,4 +1,4 @@
-//@todo #900:90days travel the world
+
 
 // FIXME #111:11min
 public class LegalTodos {
