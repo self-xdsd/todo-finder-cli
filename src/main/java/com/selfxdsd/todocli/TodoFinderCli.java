@@ -62,28 +62,20 @@ public class TodoFinderCli {
     public static void main(final String[] args) {
         logger = LoggerFactory.getLogger(TodoFinderCli.class);
 
-        try {
-            initOptions(args);
-        } catch (final ParseException ex) {
-            System.out.println("Error: Could not parse"
-                    + "command line arguments."
-            );
-        }
+        initOptions(args);
     }
 
     /**
      * Initializes program options, i.e. possible command line arguments.
      *
      * @param args Command line arguments
-     * @throws ParseException if an error occurs while parsing command
-     *                        line arguments
      */
-    private static void initOptions(final String[] args) throws ParseException {
+    private static void initOptions(final String[] args) {
         Options options = new Options();
 
         Option versionOption = new Option("v", "version", false,
-                "print utility version to the "
-                        + "standard output stream and exit"
+                "print utility version to the"
+                        + " standard output stream and exit"
         );
         versionOption.setRequired(false);
         options.addOption(versionOption);
@@ -96,7 +88,7 @@ public class TodoFinderCli {
             cmd = cmdParser.parse(options, args);
         } catch (final ParseException ex) {
             formatter.printHelp(NAME_AND_VERSION, options);
-            throw ex;
+            return;
         }
 
         if (cmd.hasOption("v") || cmd.hasOption("version")) {
