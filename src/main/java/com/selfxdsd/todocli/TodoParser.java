@@ -93,7 +93,7 @@ public final class TodoParser {
             final String[] parts = line.substring(headerIndex)
                 .trim().split("\\s", 2);
             if (parts[0].isEmpty() || !parts[0]
-                .matches("#\\d+:\\d+(min|days)")){
+                .matches("#\\d+:\\d+(m|min|mins)\\b")){
                 continue;
             }
 

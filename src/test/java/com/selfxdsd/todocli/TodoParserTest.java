@@ -22,6 +22,8 @@
  */
 package com.selfxdsd.todocli;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -70,74 +72,68 @@ public final class TodoParserTest {
         final List<Todo> todos = new TodoParser().parse(
                 "src/test/resources/LegalTodos.java"
         );
-        assertEquals(10, todos.size());
+        assertEquals(9, todos.size());
+
         assertTrue(
             compareTodos(
-                new Todo(1, 1, "#900", 90),
+                new Todo(3, 3, "#111", 11),
                 todos.get(0)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(3, 3, "#111", 11),
+                new Todo(10, 11, "#112", 12),
                 todos.get(1)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(10, 11, "#112", 12),
+                new Todo(20, 35, "#113", 13),
                 todos.get(2)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(20, 35, "#113", 13),
+                new Todo(41, 41, "#114", 14),
                 todos.get(3)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(41, 41, "#114", 14),
+                new Todo(42, 42, "#115", 15),
                 todos.get(4)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(42, 42, "#115", 15),
+                new Todo(50, 52, "#116", 16),
                 todos.get(5)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(50, 52, "#116", 16),
+                new Todo(62, 62, "#117", 17),
                 todos.get(6)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(62, 62, "#117", 17),
+                new Todo(63, 64, "#118", 18),
                 todos.get(7)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(63, 64, "#118", 18),
-                todos.get(8)
-            )
-        );
-
-        assertTrue(
-            compareTodos(
                 new Todo(65, 65, "#119", 19),
-                todos.get(9)
+                todos.get(8)
             )
         );
     }
@@ -277,5 +273,17 @@ public final class TodoParserTest {
             "src/test/resources/PhonyClass.java"
         );
         assertEquals(0, todos.size());
+    }
+
+    /**
+     * TodoParser accepts "m","min" and "mins" as valid minutes format.
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void shouldParseEstimationMinutesFormat() throws IOException{
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/TodosEstimationsFormat.java"
+        );
+        MatcherAssert.assertThat(todos, Matchers.iterableWithSize(3));
     }
 }
