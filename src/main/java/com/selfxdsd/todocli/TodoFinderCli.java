@@ -39,6 +39,9 @@ import java.nio.file.Paths;
  */
 public class TodoFinderCli {
 
+    /**
+     * Name and version of the utility.
+     */
     private static final String NAME_AND_VERSION = "TodoCLI v1.0";
 
     /**
@@ -61,8 +64,10 @@ public class TodoFinderCli {
 
         try {
             initOptions(args);
-        } catch (ParseException e) {
-            System.out.println("Error: Could not parse command line arguments.");
+        } catch (final ParseException ex) {
+            System.out.println("Error: Could not parse"
+                    + "command line arguments."
+            );
         }
     }
 
@@ -70,13 +75,16 @@ public class TodoFinderCli {
      * Initializes program options, i.e. possible command line arguments.
      *
      * @param args Command line arguments
-     * @throws ParseException if an error occurs while parsing command line arguments
+     * @throws ParseException if an error occurs while parsing command
+     *                        line arguments
      */
-    private static void initOptions(String[] args) throws ParseException {
+    private static void initOptions(final String[] args) throws ParseException {
         Options options = new Options();
 
         Option versionOption = new Option("v", "version", false,
-                "print utility version to the standard output stream and exit");
+                "print utility version to the "
+                        + "standard output stream and exit"
+        );
         versionOption.setRequired(false);
         options.addOption(versionOption);
 
@@ -86,9 +94,9 @@ public class TodoFinderCli {
 
         try {
             cmd = cmdParser.parse(options, args);
-        } catch (ParseException e) {
+        } catch (final ParseException ex) {
             formatter.printHelp(NAME_AND_VERSION, options);
-            throw e;
+            throw ex;
         }
 
         if (cmd.hasOption("v") || cmd.hasOption("version")) {
@@ -100,11 +108,13 @@ public class TodoFinderCli {
     }
 
     /**
-     * Runs the utility, i.e. starts walking the directory structure and
-     * finding TODOs.
+     * Runs the utility, i.e. starts walking the directory structure
+     * and finding TODOs.
      */
     private static void run() {
-        logger.info("Running {} from directory '" + root + "'\n", NAME_AND_VERSION);
+        logger.info("Running {} from directory '" + root + "'\n",
+                NAME_AND_VERSION
+        );
 
         try {
             Files.walkFileTree(Paths.get(root), new TodoVisitor(
