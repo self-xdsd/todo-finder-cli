@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,11 +60,6 @@ public final class TodoParser {
     private final Pattern multiLinePattern;
 
     /**
-     * Index of the currently parsed line.
-     */
-    private int currentIndex;
-
-    /**
      * Creates a new TodoParser object.
      */
     public TodoParser() {
@@ -77,13 +73,16 @@ public final class TodoParser {
      * @param path Path to the file being parsed.
      * @return List of found TODOs.
      * @throws IOException If something goes wrong.
+     * @checkstyle ExecutableStatementCount (50 lines)
      */
     public List<Todo> parse(final String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
         List<Todo> todos = new ArrayList<>();
+        final AtomicInteger currentIndex = new AtomicInteger();
 
-        for (currentIndex = 0; currentIndex < lines.size(); currentIndex++) {
-            String line = lines.get(currentIndex);
+        for (; currentIndex.get() < lines.size();
+             currentIndex.incrementAndGet()) {
+            String line = lines.get(currentIndex.get());
 
             int headerIndex = getHeaderIndex(line);
             if (headerIndex == -1) {
@@ -107,9 +106,13 @@ public final class TodoParser {
 
             Todo todo;
             if (line.matches(this.singleLineRegex)) {
-                todo = new Todo(currentIndex + 1, currentIndex + 1, body);
+                todo = new Todo(
+                    currentIndex.get() + 1,
+                    currentIndex.get() + 1,
+                    body
+                );
             } else if (line.matches(this.multiLineRegex)) {
-                todo = parseMultiLineTodo(lines, body);
+                todo = parseMultiLineTodo(lines, body, currentIndex);
             } else {
                 continue;
             }
@@ -124,16 +127,18 @@ public final class TodoParser {
      * Parses multiple lines of the input file and extracts the TODO object.
      * @param lines Lines of the multi-line TODO.
      * @param body The TODO's body; could be empty
+     * @param currentIndex Index of the currently parsed line.
      * @return The extracted TODO object
      */
     private Todo parseMultiLineTodo(
         final List<String> lines,
-        final String body
+        final String body,
+        final AtomicInteger currentIndex
     ) {
-        int start = currentIndex + 1;
+        int start = currentIndex.get() + 1;
         StringBuilder bodyBuilder = new StringBuilder(body);
         while (true) {
-            String line = lines.get(++currentIndex);
+            String line = lines.get(currentIndex.incrementAndGet());
             Matcher matcher = this.multiLinePattern.matcher(line);
             if (matcher.find()) {
                 String bodyContinuation = matcher.group(3);
@@ -144,11 +149,11 @@ public final class TodoParser {
                 bodyBuilder.append(bodyContinuation);
 
             } else {
-                currentIndex--;
+                currentIndex.decrementAndGet();
                 break;
             }
         }
-        return new Todo(start, currentIndex + 1, bodyBuilder.toString());
+        return new Todo(start, currentIndex.get() + 1, bodyBuilder.toString());
     }
 
     /**

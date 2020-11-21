@@ -30,6 +30,9 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -51,6 +54,11 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
      * Todos serializer.
      */
     private final TodosSerializer serializer;
+
+    /**
+     * Service responsible to submit todos parsing jobs.
+     */
+    private final ExecutorService service = Executors.newFixedThreadPool(3);
 
     /**
      * Root path.
@@ -89,8 +97,14 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
             final Path dir, final IOException exc
     ) throws IOException {
         if (dir.equals(root)) {
-            // scanning root has finished.
-            this.serializer.serialize();
+            try {
+                // scanning root has finished.
+                service.shutdown();
+                service.awaitTermination(5, TimeUnit.MINUTES);
+                this.serializer.serialize();
+            } catch (final InterruptedException exception) {
+                throw new IOException(exception);
+            }
         }
         return super.postVisitDirectory(dir, exc);
     }
@@ -102,25 +116,33 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     ) throws IOException {
         final String file = path.toString();
         if (file.endsWith(".java") || file.endsWith(".js")) {
-            final List<Todo> todos = parser.parse(file);
+            service.submit(() -> {
+                final List<Todo> todos;
+                try {
+                    todos = parser.parse(file);
 
-            if (todos.size() > 0) {
-                log("Found {} TODOs in {}:", todos.size(), file);
-            }
+                    if (todos.size() > 0) {
+                        log("Found {} TODOs in {}:", todos.size(), file);
+                    }
 
-            for (int i = 0; i < todos.size(); i++) {
-                Todo todo = todos.get(i);
+                    for (int i = 0; i < todos.size(); i++) {
+                        Todo todo = todos.get(i);
 
-                String suffix;
-                if (i == todos.size() - 1) {
-                    suffix = "\n";
-                } else {
-                    suffix = "";
+                        String suffix;
+                        if (i == todos.size() - 1) {
+                            suffix = "\n";
+                        } else {
+                            suffix = "";
+                        }
+                        log(todo.toString() + suffix);
+                    }
+
+                    this.serializer.addAll(todos);
+                } catch (final IOException exception) {
+                    logger.error("Something went wrong", exception);
+                    service.shutdownNow();
                 }
-                log(todo.toString() + suffix);
-            }
-
-            this.serializer.addAll(todos);
+            });
         }
         return CONTINUE;
     }
