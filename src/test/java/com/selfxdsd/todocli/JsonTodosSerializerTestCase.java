@@ -63,7 +63,8 @@ public final class JsonTodosSerializerTestCase {
         MatcherAssert.assertThat(json, Matchers.equalTo(
             Json.createArrayBuilder()
                 .add(Json.createObjectBuilder()
-                    .add("ticket", "#153")
+                    .add("id", 1194770182)
+                    .add("originatingTicket", "#153")
                     .add("estimate", 30)
                     .add("body",
                         "Add integration tests for filters.")
@@ -73,7 +74,8 @@ public final class JsonTodosSerializerTestCase {
                         "src/test/resources/RtImagesITCase.java")
                     .build())
                 .add(Json.createObjectBuilder()
-                    .add("ticket", "#187")
+                    .add("id", -1377131499)
+                    .add("originatingTicket", "#187")
                     .add("estimate", 30)
                     .add("body",
                         "To have multiple controlled images for filtering and"
