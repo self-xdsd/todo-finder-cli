@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -61,6 +62,12 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
     private final ExecutorService service = Executors.newFixedThreadPool(3);
 
     /**
+     * Flag that marks if there was an error while parsing files for todos.
+     * If that's the case serialization will not occur.
+     */
+    private final AtomicBoolean hasErrors;
+
+    /**
      * Root path.
      */
     private Path root;
@@ -80,6 +87,7 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
         this.serializer = serializer;
         this.parser = new TodoParser();
         this.logger = logger;
+        this.hasErrors = new AtomicBoolean(false);
     }
 
     @Override
@@ -99,9 +107,14 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
         if (dir.equals(root)) {
             try {
                 // scanning root has finished.
-                service.shutdown();
-                service.awaitTermination(5, TimeUnit.MINUTES);
-                this.serializer.serialize();
+                this.service.shutdown();
+                this.service.awaitTermination(5, TimeUnit.MINUTES);
+                if (this.hasErrors.get()) {
+                    throw new IOException("Could not serialize todos; something"
+                        + " went wrong while parsing a file for todos.");
+                } else {
+                    this.serializer.serialize();
+                }
             } catch (final InterruptedException exception) {
                 throw new IOException(exception);
             }
@@ -115,8 +128,9 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
             final BasicFileAttributes attrs
     ) throws IOException {
         final String file = path.toString();
-        if (file.endsWith(".java") || file.endsWith(".js")) {
-            service.submit(() -> {
+        if ((file.endsWith(".java") || file.endsWith(".js"))
+            && !this.hasErrors.get()) {
+            this.service.submit(() -> {
                 final List<Todo> todos;
                 try {
                     todos = parser.parse(file);
@@ -139,8 +153,10 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
 
                     this.serializer.addAll(todos);
                 } catch (final IOException exception) {
-                    logger.error("Something went wrong", exception);
-                    service.shutdownNow();
+                    this.logger.error("Something went wrong", exception);
+                    if(this.hasErrors.compareAndSet(false, true)) {
+                        this.service.shutdownNow();
+                    }
                 }
             });
         }

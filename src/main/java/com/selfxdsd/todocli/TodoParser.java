@@ -78,10 +78,9 @@ public final class TodoParser {
     public List<Todo> parse(final String path) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(path));
         List<Todo> todos = new ArrayList<>();
-        final AtomicInteger currentIndex = new AtomicInteger();
+        final AtomicInteger currentIndex = new AtomicInteger(-1);
 
-        for (; currentIndex.get() < lines.size();
-             currentIndex.incrementAndGet()) {
+        while (currentIndex.incrementAndGet() < lines.size()) {
             String line = lines.get(currentIndex.get());
 
             int headerIndex = getHeaderIndex(line);
