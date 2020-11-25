@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Json Serializer for {@link Todo}.
+ *
  * @author criske
  * @version $Id$
  * @since 0.0.1
@@ -66,18 +67,20 @@ public final class JsonTodosSerializer implements TodosSerializer {
     public URI serialize() {
         final URI location;
         try (final JsonWriter writer = Json
-            .createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING, true))
-            .createWriter(new FileWriter(this.getFile(true)))) {
+                .createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING,
+                        true))
+                .createWriter(new FileWriter(this.getFile(true)))) {
             final JsonArrayBuilder array = Json.createArrayBuilder();
             for (final Todo todo : todos) {
                 final JsonObject object = Json.createObjectBuilder()
-                    .add("ticket", todo.getTicketID())
-                    .add("estimate", todo.getEstimatedTime())
-                    .add("body", todo.getBody())
-                    .add("lines", todo.getStart() + "-"
-                        + todo.getEnd())
-                    .add("file", todo.getPath())
-                    .build();
+                        .add("id", todo.getID())
+                        .add("originatingTicket", todo.getTicketID())
+                        .add("estimate", todo.getEstimatedTime())
+                        .add("body", todo.getBody())
+                        .add("lines", todo.getStart() + "-"
+                                + todo.getEnd())
+                        .add("file", todo.getPath())
+                        .build();
                 array.add(object);
             }
             writer.write(array.build());
@@ -91,25 +94,27 @@ public final class JsonTodosSerializer implements TodosSerializer {
     /**
      * File were todos are going to be saved. This is in the same location
      * of the running application.
+     *
      * @param deleteFirst If file exists, it will be deleted first.
      * @return File.
      * @throws URISyntaxException If something went wrong when getting path.
-     * @throws IOException If something when wrong while deleting the file.
+     * @throws IOException        If something when wrong while deleting the
+     *                            file.
      */
     private File getFile(final boolean deleteFirst) throws URISyntaxException,
-        IOException {
+            IOException {
         //folder where application is running.
         final String parent = new File(JsonTodosSerializer.class
-            .getProtectionDomain()
-            .getCodeSource()
-            .getLocation()
-            .toURI())
-            .getParent();
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .toURI())
+                .getParent();
         final File file = new File(parent, "todos.json");
         if (deleteFirst && file.exists()) {
-            if(!file.delete()){
+            if (!file.delete()) {
                 throw new IOException(
-                    "Existent \"todos.json\" file could not be deleted."
+                        "Existent \"todos.json\" file could not be deleted."
                 );
             }
         }
