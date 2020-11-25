@@ -25,7 +25,8 @@ public final class JsonTodoTest {
 
         Assert.assertEquals(jsonObject.getInt("start"), 1);
         Assert.assertEquals(jsonObject.getInt("end"), 2);
-        Assert.assertEquals(jsonObject.getString("ticketID"), "#1138");
+        Assert.assertEquals(jsonObject.getString("originatingTicket"),
+            "#1138");
         Assert.assertEquals(jsonObject.getInt("estimatedTime"), 60);
         Assert.assertEquals(jsonObject.getString("body"), "");
     }

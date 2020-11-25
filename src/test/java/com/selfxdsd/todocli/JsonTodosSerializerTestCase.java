@@ -64,19 +64,18 @@ public final class JsonTodosSerializerTestCase {
             Json.createArrayBuilder()
                 .add(Json.createObjectBuilder()
                     .add("id", 1194770182)
+                    .add("start", 42)
+                    .add("end", 42)
                     .add("originatingTicket", "#153")
-                    .add("estimate", 30)
-                    .add("body",
-                        "Add integration tests for filters.")
-                    .add("lines",
-                        "42-42")
-                    .add("file",
-                        "src/test/resources/RtImagesITCase.java")
+                    .add("estimatedTime", 30)
+                    .add("body", "Add integration tests for filters.")
                     .build())
                 .add(Json.createObjectBuilder()
                     .add("id", -1377131499)
+                    .add("start", 69)
+                    .add("end", 72)
                     .add("originatingTicket", "#187")
-                    .add("estimate", 30)
+                    .add("estimatedTime", 30)
                     .add("body",
                         "To have multiple controlled images for filtering and"
                             + " not the ubuntu image dependency for this test"
@@ -85,10 +84,6 @@ public final class JsonTodosSerializerTestCase {
                             + " https://docs.docker.com/engine/api/v1.37/"
                             + "#operation/ImageBuild."
                     )
-                    .add("lines",
-                        "69-72")
-                    .add("file",
-                        "src/test/resources/RtImagesITCase.java")
                     .build())
                 .build()
         ));

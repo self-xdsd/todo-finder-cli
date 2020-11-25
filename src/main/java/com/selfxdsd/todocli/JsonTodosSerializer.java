@@ -23,8 +23,6 @@
 package com.selfxdsd.todocli;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
 import java.io.File;
@@ -38,7 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Json Serializer for {@link Todo}.
- *
  * @author criske
  * @version $Id$
  * @since 0.0.1
@@ -67,23 +64,9 @@ public final class JsonTodosSerializer implements TodosSerializer {
     public URI serialize() {
         final URI location;
         try (final JsonWriter writer = Json
-                .createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING,
-                        true))
-                .createWriter(new FileWriter(this.getFile(true)))) {
-            final JsonArrayBuilder array = Json.createArrayBuilder();
-            for (final Todo todo : todos) {
-                final JsonObject object = Json.createObjectBuilder()
-                        .add("id", todo.getID())
-                        .add("originatingTicket", todo.getTicketID())
-                        .add("estimate", todo.getEstimatedTime())
-                        .add("body", todo.getBody())
-                        .add("lines", todo.getStart() + "-"
-                                + todo.getEnd())
-                        .add("file", todo.getPath())
-                        .build();
-                array.add(object);
-            }
-            writer.write(array.build());
+            .createWriterFactory(Map.of(JsonGenerator.PRETTY_PRINTING, true))
+            .createWriter(new FileWriter(this.getFile(true)))) {
+            writer.write(new JsonTodos(todos));
             location = this.getFile(false).toURI();
         } catch (final URISyntaxException | IOException exception) {
             throw new RuntimeException(exception);
