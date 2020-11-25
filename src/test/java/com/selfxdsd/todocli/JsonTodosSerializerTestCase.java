@@ -69,6 +69,7 @@ public final class JsonTodosSerializerTestCase {
                     .add("originatingTicket", "#153")
                     .add("estimatedTime", 30)
                     .add("body", "Add integration tests for filters.")
+                    .add("file", "src/test/resources/RtImagesITCase.java")
                     .build())
                 .add(Json.createObjectBuilder()
                     .add("id", -1377131499)
@@ -84,6 +85,7 @@ public final class JsonTodosSerializerTestCase {
                             + " https://docs.docker.com/engine/api/v1.37/"
                             + "#operation/ImageBuild."
                     )
+                    .add("file", "src/test/resources/RtImagesITCase.java")
                     .build())
                 .build()
         ));

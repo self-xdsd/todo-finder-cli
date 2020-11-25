@@ -19,6 +19,7 @@ public final class JsonTodoTest {
     @Test
     public void whenCallingCtorOfJsonTodoExpectJsonObject() {
         Todo todo = new Todo(1, 2, "#1138", 60);
+        todo.setPath("/");
 
         JsonTodo jsonTodo = new JsonTodo(todo);
         JsonObject jsonObject = jsonTodo.asJsonObject();
@@ -29,5 +30,6 @@ public final class JsonTodoTest {
             "#1138");
         Assert.assertEquals(jsonObject.getInt("estimatedTime"), 60);
         Assert.assertEquals(jsonObject.getString("body"), "");
+        Assert.assertEquals(jsonObject.getString("file"), "/");
     }
 }

@@ -20,6 +20,7 @@ public class JsonTodo extends AbstractJsonObject {
                 .add("originatingTicket", todo.getTicketID())
                 .add("estimatedTime", todo.getEstimatedTime())
                 .add("body", todo.getBody())
+                .add("file", todo.getPath())
                 .build());
     }
 }
