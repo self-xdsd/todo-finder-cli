@@ -40,9 +40,15 @@ import java.nio.file.Paths;
 public class TodoFinderCli {
 
     /**
-     * Name and version of the utility.
+     * App config.
      */
-    private static final String NAME_AND_VERSION = "TodoCLI v1.0";
+    private static final Config CONFIG = new Config();
+
+    /**
+     * Name and version of the utility.
+     * @checkstyle LineLength (3 lines)
+     */
+    private static final String NAME_AND_VERSION = "Todo Finder CLI, version %s";
 
     /**
      * The root directory within which to search.
@@ -87,12 +93,16 @@ public class TodoFinderCli {
         try {
             cmd = cmdParser.parse(options, args);
         } catch (final ParseException ex) {
-            formatter.printHelp(NAME_AND_VERSION, options);
+            formatter.printHelp(
+                String.format(NAME_AND_VERSION, CONFIG.version()), options
+            );
             return;
         }
 
         if (cmd.hasOption("v") || cmd.hasOption("version")) {
-            System.out.println(NAME_AND_VERSION);
+            System.out.println(
+                String.format(NAME_AND_VERSION, CONFIG.version())
+            );
 
         } else {
             run();
@@ -104,17 +114,18 @@ public class TodoFinderCli {
      * and finding TODOs.
      */
     private static void run() {
-        logger.info("Running {} from directory '" + root + "'\n",
-                NAME_AND_VERSION
+        logger.info(
+            "Running {}, within directory '" + root + "'\n",
+            String.format(NAME_AND_VERSION, CONFIG.version())
         );
 
         try {
             Files.walkFileTree(Paths.get(root), new TodoVisitor(
-                    new JsonTodosSerializer(), logger
+                new JsonTodosSerializer(), logger
             ));
         } catch (final IOException ex) {
             System.err.println(
-                    "Could not walk the given directory structure!"
+                "Could not walk the given directory structure!"
             );
             ex.printStackTrace();
         }
