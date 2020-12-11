@@ -44,6 +44,9 @@ public final class Config {
      */
     private final Properties properties;
 
+    /**
+     * Ctor.
+     */
     public Config() {
         this.properties = new Properties();
         final ClassLoader loader =
@@ -58,6 +61,10 @@ public final class Config {
         }
     }
 
+    /**
+     * The application's version.
+     * @return String.
+     */
     public String version() {
         return this.properties.getProperty("build.version");
     }

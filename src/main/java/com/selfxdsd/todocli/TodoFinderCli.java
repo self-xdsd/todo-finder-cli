@@ -42,10 +42,11 @@ public class TodoFinderCli {
     /**
      * App config.
      */
-    private final static Config config = new Config();
+    private static final Config CONFIG = new Config();
 
     /**
      * Name and version of the utility.
+     * @checkstyle LineLength (3 lines)
      */
     private static final String NAME_AND_VERSION = "Todo Finder CLI, version %s";
 
@@ -93,14 +94,14 @@ public class TodoFinderCli {
             cmd = cmdParser.parse(options, args);
         } catch (final ParseException ex) {
             formatter.printHelp(
-                String.format(NAME_AND_VERSION, config.version()), options
+                String.format(NAME_AND_VERSION, CONFIG.version()), options
             );
             return;
         }
 
         if (cmd.hasOption("v") || cmd.hasOption("version")) {
             System.out.println(
-                String.format(NAME_AND_VERSION, config.version())
+                String.format(NAME_AND_VERSION, CONFIG.version())
             );
 
         } else {
@@ -115,7 +116,7 @@ public class TodoFinderCli {
     private static void run() {
         logger.info(
             "Running {}, within directory '" + root + "'\n",
-            String.format(NAME_AND_VERSION, config.version())
+            String.format(NAME_AND_VERSION, CONFIG.version())
         );
 
         try {
