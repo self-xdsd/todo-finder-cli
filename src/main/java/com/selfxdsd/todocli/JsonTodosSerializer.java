@@ -97,7 +97,7 @@ public final class JsonTodosSerializer implements TodosSerializer {
         if (deleteFirst && file.exists()) {
             if (!file.delete()) {
                 throw new IOException(
-                        "Existent \"todos.json\" file could not be deleted."
+                    "Existent \"todos.json\" file could not be deleted."
                 );
             }
         }
