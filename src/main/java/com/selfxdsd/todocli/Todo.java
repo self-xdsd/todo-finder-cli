@@ -204,7 +204,11 @@ public final class Todo {
      * @param path The path
      */
     public void setPath(final String path) {
-        this.path = path;
+        if(path != null && path.startsWith("./")) {
+            this.path = path.substring(2);
+        } else {
+            this.path = path;
+        }
     }
 
 
