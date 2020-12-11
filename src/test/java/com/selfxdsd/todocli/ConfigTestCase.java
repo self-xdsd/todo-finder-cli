@@ -43,7 +43,12 @@ public final class ConfigTestCase {
         final Config config = new Config();
         MatcherAssert.assertThat(
             config.version(),
-            Matchers.endsWith("-SNAPSHOT")
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.not(
+                    Matchers.equalTo("${project.version}")
+                )
+            )
         );
     }
 }
