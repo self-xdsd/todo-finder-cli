@@ -63,77 +63,70 @@ public final class TodoParserTest {
     }
 
     /**
-     * Class LegalTodos should contain ten TODOs.
+     * Class LegalTodos should contain eight TODOs.
      *
      * @throws IOException If something goes wrong.
      */
     @Test
-    public void legalTodosClassExpectExactlyTenTodos() throws IOException {
+    public void legalTodosClassExpectExactlyEightTodos() throws IOException {
         final List<Todo> todos = new TodoParser().parse(
                 "src/test/resources/LegalTodos.java"
         );
-        assertEquals(9, todos.size());
+        assertEquals(8, todos.size());
 
         assertTrue(
             compareTodos(
-                new Todo(3, 3, "#111", 11),
+                new Todo(10, 11, "#112", 12),
                 todos.get(0)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(10, 11, "#112", 12),
+                new Todo(20, 35, "#113", 13),
                 todos.get(1)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(20, 35, "#113", 13),
+                new Todo(41, 41, "#114", 14),
                 todos.get(2)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(41, 41, "#114", 14),
+                new Todo(42, 42, "#115", 15),
                 todos.get(3)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(42, 42, "#115", 15),
+                new Todo(50, 52, "#116", 16),
                 todos.get(4)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(50, 52, "#116", 16),
+                new Todo(62, 62, "#117", 17),
                 todos.get(5)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(62, 62, "#117", 17),
+                new Todo(63, 64, "#118", 18),
                 todos.get(6)
             )
         );
 
         assertTrue(
             compareTodos(
-                new Todo(63, 64, "#118", 18),
-                todos.get(7)
-            )
-        );
-
-        assertTrue(
-            compareTodos(
                 new Todo(65, 65, "#119", 19),
-                todos.get(8)
+                todos.get(7)
             )
         );
     }
@@ -179,7 +172,7 @@ public final class TodoParserTest {
         final List<Todo> todos = new TodoParser().parse(
                 "src/test/resources/TodosWithBodies.java"
         );
-        assertEquals(7, todos.size());
+        assertEquals(6, todos.size());
 
         assertEquals(
             "this is an example of a single-line todo.",
@@ -202,11 +195,8 @@ public final class TodoParserTest {
             todos.get(4).getBody()
         );
         assertEquals(
-            "", todos.get(5).getBody()
-        );
-        assertEquals(
             "...body...",
-            todos.get(6).getBody()
+            todos.get(5).getBody()
         );
     }
 
