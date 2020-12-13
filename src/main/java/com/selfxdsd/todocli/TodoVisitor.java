@@ -115,34 +115,32 @@ public final class TodoVisitor extends SimpleFileVisitor<Path> {
             final BasicFileAttributes attrs
     ) throws IOException {
         final String file = path.toString();
-        if (file.endsWith(".java") || file.endsWith(".js")) {
-            this.service.submit(() -> {
-                final List<Todo> todos;
-                try {
-                    todos = parser.parse(file);
+        this.service.submit(() -> {
+            final List<Todo> todos;
+            try {
+                todos = parser.parse(file);
 
-                    if (todos.size() > 0) {
-                        log("Found {} TODOs in {}:", todos.size(), file);
-                    }
-
-                    for (int i = 0; i < todos.size(); i++) {
-                        Todo todo = todos.get(i);
-
-                        String suffix;
-                        if (i == todos.size() - 1) {
-                            suffix = "\n";
-                        } else {
-                            suffix = "";
-                        }
-                        log(todo.toString() + suffix);
-                    }
-
-                    this.serializer.addAll(todos);
-                } catch (final IOException exception) {
-                    this.logger.error("Something went wrong", exception);
+                if (todos.size() > 0) {
+                    log("Found {} TODOs in {}:", todos.size(), file);
                 }
-            });
-        }
+
+                for (int i = 0; i < todos.size(); i++) {
+                    Todo todo = todos.get(i);
+
+                    String suffix;
+                    if (i == todos.size() - 1) {
+                        suffix = "\n";
+                    } else {
+                        suffix = "";
+                    }
+                    log(todo.toString() + suffix);
+                }
+
+                this.serializer.addAll(todos);
+            } catch (final IOException exception) {
+                this.logger.error("Something went wrong", exception);
+            }
+        });
         return CONTINUE;
     }
 
