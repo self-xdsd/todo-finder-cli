@@ -47,22 +47,13 @@ public class LegalTodos {
 
     }
 
-    /**
-     * Method F.
-     *
-     * @todo #117:17min
-     * The above todo has no body.
-     */
-    public void methodF() {
-
-    }
 
     /**
      * Method F.
      *
      * @todo #118:18min     ...body...
      */
-    public void methodG() {
+    public void methodF() {
 
     }
 }
