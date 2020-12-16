@@ -22,9 +22,9 @@
  */
 package com.selfxdsd.todocli;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * Todo Parser.
+ *
  * @version $Id$
  * @since 0.0.1
  */
@@ -49,51 +50,82 @@ public final class TodoParser {
      * @param path Path to the file being parsed.
      * @return List of found TODOs.
      * @throws IOException If something goes wrong.
-     * @checkstyle ExecutableStatementCount (50 lines)
      */
     public List<Todo> parse(final String path) throws IOException {
         final List<Todo> todos = new ArrayList<>();
-        final List<String> lines = Files.readAllLines(Paths.get(path));
-        final StringBuilder bodyBuilder = new StringBuilder();
-        final TodoBuilder todoBuilder = new TodoBuilder().setPath(path);
-        int lineIndex = -1;
-        int todoPosition = -1;
-        while (++lineIndex < lines.size()) {
-            // replace tabs with 4 spaces to have constituency when check for
-            // alignment in the case of multiline body todos.
-            // NOTE: this assumes that user is using 4 spaces for a tab.
-            final String line = lines.get(lineIndex)
-                .replace("\t", " ".repeat(4));
-            if (todoPosition == -1) {
-                final Matcher matcher = TODO_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    todoPosition = matcher.start(1);
-                    todoBuilder.setStart(lineIndex + 1);
-                    bodyBuilder.append(matcher.group(4));
-                    this.addHeader(todoBuilder, matcher.group(2));
+        try (final BufferedReader reader = new BufferedReader(
+            new FileReader(path)
+        )) {
+            final StringBuilder bodyBuilder = new StringBuilder();
+            final TodoBuilder todoBuilder = new TodoBuilder().setPath(path);
+            int lineIndex = -1;
+            int todoPosition = -1;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lineIndex++;
+                // replace tabs with 4 spaces to have constituency when check
+                // for alignment in the case of multiline body todos.
+                // NOTE: this assumes that user is using 4 spaces for a tab.
+                line = line.replace("\t", " ".repeat(4));
+                if (todoPosition == -1) {
+                    todoPosition = this.checkForTodo(
+                        bodyBuilder,
+                        todoBuilder,
+                        lineIndex,
+                        line
+                    );
+                } else if (todoPosition < line.length()
+                    && Character.isSpaceChar(line.charAt(todoPosition))) {
+                    // if the character aligned to todoPosition is a white
+                    // space, then we have multiline.
+                    bodyBuilder.append(line.substring(todoPosition));
+                } else {
+                    final Todo todo = this.createTodo(
+                        bodyBuilder,
+                        todoBuilder,
+                        lineIndex
+                    );
+                    if (todo != null) {
+                        todos.add(todo);
+                    }
+                    //reset buffer
+                    bodyBuilder.setLength(0);
+                    todoPosition = this.checkForTodo(
+                        bodyBuilder,
+                        todoBuilder,
+                        lineIndex,
+                        line
+                    );
                 }
-            } else if (todoPosition < line.length()
-                && Character.isSpaceChar(line.charAt(todoPosition))) {
-                // if the character aligned to todoPosition is a white space,
-                // then we have multiline.
-                bodyBuilder.append(line.substring(todoPosition));
-            } else {
-                final Todo todo = this.createTodo(
-                    bodyBuilder,
-                    todoBuilder,
-                    lineIndex
-                );
-                if (todo != null) {
-                    todos.add(todo);
-                }
-                //reset buffer and position
-                bodyBuilder.setLength(0);
-                todoPosition = -1;
-                //go back one position to check if line is starting another todo
-                lineIndex--;
             }
         }
         return todos;
+    }
+
+    /**
+     * Initializes a new todo and its body via builders when todo pattern
+     * is matching current line and returns the todo starting position.
+     * @param bodyBuilder Todo builder.
+     * @param todoBuilder Body builder.
+     * @param lineIndex Current line index.
+     * @param line Current line.
+     * @return Todo starting position in the line or -1 if there is no match.
+     */
+    private int checkForTodo(final StringBuilder bodyBuilder,
+                             final TodoBuilder todoBuilder,
+                             final int lineIndex,
+                             final String line) {
+        final Matcher matcher = TODO_PATTERN.matcher(line);
+        final int todoPosition;
+        if (matcher.find()) {
+            todoPosition = matcher.start(1);
+            todoBuilder.setStart(lineIndex + 1);
+            bodyBuilder.append(matcher.group(4));
+            this.addHeader(todoBuilder, matcher.group(2));
+        } else {
+            todoPosition = -1;
+        }
+        return todoPosition;
     }
 
     /**
