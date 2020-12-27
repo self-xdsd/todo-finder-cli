@@ -203,7 +203,7 @@
                 <repository>
                     <id>github</id>
                     <name>Self's Storage on Github Packages</name>
-                    <url>https://maven.pkg.github.com/self-xdsd/self-storage</url>
+                    <url>https://maven.pkg.github.com/self-xdsd/todo-finder-cli</url>
                 </repository>
             </distributionManagement>
         </profile>
