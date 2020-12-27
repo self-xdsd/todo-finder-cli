@@ -276,4 +276,29 @@ public final class TodoParserTest {
         );
         MatcherAssert.assertThat(todos, Matchers.iterableWithSize(3));
     }
+
+    /**
+     * TodoVisitor allows python files to be parsed for todos.
+     *
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void shouldAllowPyFilesToBeParsedForTodos() throws IOException {
+        final List<Todo> todos = new TodoParser().parse(
+            "src/test/resources/PythonTodos.py"
+        );
+        MatcherAssert.assertThat(todos, Matchers.iterableWithSize(3));
+        assertEquals(
+            "This is a multiline todo for python.",
+            todos.get(0).getBody()
+        );
+        assertEquals(
+            "This is another multiline todo for python.",
+            todos.get(1).getBody()
+        );
+        assertEquals(
+            "This a single line todo for python.",
+            todos.get(2).getBody()
+        );
+    }
 }

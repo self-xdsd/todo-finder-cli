@@ -27,7 +27,7 @@ public class PhonyClass {
      * This should not trigger the @todo parser becauase it's not an actual todo.
      */
     public void method3() {
-        "// @todo #187:30min this should not trigger the todo parser because this is not an actual todo".trim();
+        "// @\\todo #187:30min this should not trigger the todo parser because this is not an actual todo".trim();
     }
 
     /**
