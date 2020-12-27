@@ -32,7 +32,7 @@ echo "NEXT VERSION IS"
 echo $NEXT_VERSION
 
 mvn versions:set -DnewVersion=${tag}
-mvn clean deploy -PsignArtifactsGpg,deployToGithubPackages --settings /home/r/settings.xml
+mvn clean deploy -e -X -PsignArtifactsGpg,deployToGithubPackages --settings /home/r/settings.xml
 sed -i "s/CLI, version \`.*\`/CLI, version \`${tag}\`/" README.md
 
 mvn versions:set -DnewVersion=${NEXT_VERSION}
