@@ -87,12 +87,7 @@ public final class JsonTodosSerializer implements TodosSerializer {
     private File getFile(final boolean deleteFirst) throws URISyntaxException,
             IOException {
         //folder where application is running.
-        final String parent = new File(JsonTodosSerializer.class
-                .getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .toURI())
-                .getParent();
+        final File parent = new File(System.getProperty("user.dir"));
         final File file = new File(parent, "todos.json");
         if (deleteFirst && file.exists()) {
             if (!file.delete()) {
