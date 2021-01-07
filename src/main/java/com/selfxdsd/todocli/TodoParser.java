@@ -23,8 +23,8 @@
 package com.selfxdsd.todocli;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,10 +39,19 @@ import java.util.regex.Pattern;
 public final class TodoParser {
 
     /**
+     * Git blame header pattern that should be at the start of each line.
+     */
+    private static final String GIT_BLAME_PATTERN =
+        ".*\\((.+)\\s+(\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\s\\+\\d{4})"
+        + "\\s+\\d+\\)\\s";
+
+    /**
      * TODO Pattern.
      */
     private static final Pattern TODO_PATTERN = Pattern.compile(
-        "^\\W*(@todo|TODO|@fixme|FIXME)\\s*(#\\d+:\\d+(m|min|mins))\\b(.*)$"
+        "^" + GIT_BLAME_PATTERN
+            + "\\W*(@todo|TODO|@fixme|FIXME)\\s*(#\\d+:\\d+(m|min|mins))\\b(.*)"
+            + "$"
     );
 
     /**
@@ -53,9 +62,7 @@ public final class TodoParser {
      */
     public List<Todo> parse(final String path) throws IOException {
         final List<Todo> todos = new ArrayList<>();
-        try (final BufferedReader reader = new BufferedReader(
-            new FileReader(path)
-        )) {
+        try (final BufferedReader reader = this.readFileWithBlame(path)) {
             final StringBuilder bodyBuilder = new StringBuilder();
             final TodoBuilder todoBuilder = new TodoBuilder().setPath(path);
             int lineIndex = -1;
@@ -118,10 +125,12 @@ public final class TodoParser {
         final Matcher matcher = TODO_PATTERN.matcher(line);
         final int todoPosition;
         if (matcher.find()) {
-            todoPosition = matcher.start(1);
-            todoBuilder.setStart(lineIndex + 1);
-            bodyBuilder.append(matcher.group(4));
-            this.addHeader(todoBuilder, matcher.group(2));
+            todoPosition = matcher.start(3);
+            todoBuilder.setAuthor(matcher.group(1).trim())
+                .setTimestamp(matcher.group(2))
+                .setStart(lineIndex + 1);
+            bodyBuilder.append(matcher.group(6));
+            this.addHeader(todoBuilder, matcher.group(4));
         } else {
             todoPosition = -1;
         }
@@ -165,4 +174,18 @@ public final class TodoParser {
         );
     }
 
+    /**
+     * Reads file together with its git blame.
+     * @param path File path.
+     * @return Reader.
+     * @throws IOException If something goes wrong.
+     */
+    private BufferedReader readFileWithBlame(final String path)
+        throws IOException {
+        final String command = "git blame " + path;
+        final Process process = Runtime.getRuntime().exec(command);
+        return new BufferedReader(
+            new InputStreamReader(process.getInputStream())
+        );
+    }
 }

@@ -293,6 +293,15 @@ public final class TodoParserTest {
             todos.get(0).getBody()
         );
         assertEquals(
+            "cristianpela",
+            todos.get(0).getAuthor()
+        );
+        assertEquals(
+            "2020-12-15 14:39:07 +0200",
+            todos.get(0).getTimestamp()
+        );
+
+        assertEquals(
             "This is another multiline todo for python.",
             todos.get(1).getBody()
         );

@@ -60,6 +60,17 @@ class TodoBuilder {
      */
     private String path;
 
+
+    /**
+     * The author of todo.
+     */
+    private String author;
+
+    /**
+     * Timestamp of creation.
+     */
+    private String timestamp;
+
     /**
      * The first line of the Todo.
      *
@@ -131,6 +142,26 @@ class TodoBuilder {
     }
 
     /**
+     * Set the todo author.
+     * @param author Author.
+     * @return Builder.
+     */
+    public TodoBuilder setAuthor(final String author){
+        this.author = author;
+        return this;
+    }
+
+    /**
+     * Set the todo creation timestamp.
+     * @param timestamp Timestamp.
+     * @return Builder.
+     */
+    public TodoBuilder setTimestamp(final String timestamp){
+        this.timestamp = timestamp;
+        return this;
+    }
+
+    /**
      * Creates a new Todo.
      *
      * @return Todo
@@ -144,6 +175,8 @@ class TodoBuilder {
             this.body
         );
         todo.setPath(this.path);
+        todo.setAuthor(this.author);
+        todo.setTimestamp(this.timestamp);
         return todo;
     }
 }
