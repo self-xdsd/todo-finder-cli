@@ -64,6 +64,17 @@ public final class Todo {
      */
     private String path;
 
+
+    /**
+     * The author of todo.
+     */
+    private String author;
+
+    /**
+     * Timestamp of creation.
+     */
+    private String timestamp;
+
     /**
      * Creates a new Todo object.
      *
@@ -211,6 +222,38 @@ public final class Todo {
         }
     }
 
+    /**
+     * Set the todo author.
+     * @param author Author.
+     */
+    public void setAuthor(final String author){
+        this.author = author;
+    }
+
+    /**
+     * Get the todo author.
+     * @return String
+     */
+    public String getAuthor(){
+        return this.author;
+    }
+
+    /**
+     * Set the todo creation timestamp.
+     * @param timestamp Timestamp.
+     */
+    public void setTimestamp(final String timestamp){
+        this.timestamp = timestamp;
+    }
+
+    /**
+     * Get the todo timestamp.
+     * @return String.
+     */
+    public String getTimestamp(){
+        return this.timestamp;
+    }
+
 
     /**
      * Compares this to the given, other, Todo object.
@@ -267,12 +310,15 @@ public final class Todo {
 
         return String.format(
                 "TODO [%s, TicketID: %s, Estimated Time: %s, "
-                        + "Body: '%s', Path: '%s']",
+                        + "Body: '%s', Path: '%s', Author: '%s', "
+                        + "Timestamp: '%s'.]",
                 linesPart,
                 this.ticketID,
                 this.estimatedTime,
                 this.body,
-                this.path
+                this.path,
+                this.author,
+                this.timestamp
         );
     }
 }
