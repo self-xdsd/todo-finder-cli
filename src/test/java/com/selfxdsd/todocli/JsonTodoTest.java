@@ -20,10 +20,15 @@ public final class JsonTodoTest {
     public void whenCallingCtorOfJsonTodoExpectJsonObject() {
         Todo todo = new Todo(1, 2, "#1138", 60);
         todo.setPath("/");
+        todo.setAuthor("john");
+        todo.setTimestamp("2020-11-08 09:32:57 +0100");
 
         JsonTodo jsonTodo = new JsonTodo(todo);
         JsonObject jsonObject = jsonTodo.asJsonObject();
 
+        Assert.assertEquals(jsonObject.getString("author"), "john");
+        Assert.assertEquals(jsonObject.getString("timestamp"),
+            "2020-11-08 09:32:57 +0100");
         Assert.assertEquals(jsonObject.getInt("start"), 1);
         Assert.assertEquals(jsonObject.getInt("end"), 2);
         Assert.assertEquals(jsonObject.getString("originatingTicket"),
