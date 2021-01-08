@@ -1,6 +1,8 @@
 package com.selfxdsd.todocli;
 
 import javax.json.Json;
+import javax.json.JsonValue;
+import java.util.Optional;
 
 /**
  * Todo as JsonObject.
@@ -15,8 +17,12 @@ public class JsonTodo extends AbstractJsonObject {
     public JsonTodo(final Todo todo) {
         super(Json.createObjectBuilder()
                 .add("id", todo.getID())
-                .add("author", todo.getAuthor())
-                .add("timestamp", todo.getTimestamp())
+                .add("author", Optional.ofNullable(todo.getAuthor())
+                    .<JsonValue>map(Json::createValue)
+                    .orElse(JsonValue.NULL))
+                .add("timestamp", Optional.ofNullable(todo.getTimestamp())
+                    .<JsonValue>map(Json::createValue)
+                    .orElse(JsonValue.NULL))
                 .add("start", todo.getStart())
                 .add("end", todo.getEnd())
                 .add("originatingTicket", todo.getTicketID())
