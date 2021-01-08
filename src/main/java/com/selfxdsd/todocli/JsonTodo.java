@@ -15,6 +15,8 @@ public class JsonTodo extends AbstractJsonObject {
     public JsonTodo(final Todo todo) {
         super(Json.createObjectBuilder()
                 .add("id", todo.getID())
+                .add("author", todo.getAuthor())
+                .add("timestamp", todo.getTimestamp())
                 .add("start", todo.getStart())
                 .add("end", todo.getEnd())
                 .add("originatingTicket", todo.getTicketID())
