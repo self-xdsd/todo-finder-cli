@@ -172,7 +172,7 @@ public final class TodoParserTest {
         final List<Todo> todos = new TodoParser().parse(
                 "src/test/resources/TodosWithBodies.java"
         );
-        assertEquals(6, todos.size());
+        assertEquals(9, todos.size());
 
         assertEquals(
             "this is an example of a single-line todo.",
@@ -197,6 +197,18 @@ public final class TodoParserTest {
         assertEquals(
             "...body...",
             todos.get(5).getBody()
+        );
+        assertEquals(
+            "Single line todo method G.",
+            todos.get(6).getBody()
+        );
+        assertEquals(
+            "Single line todo method H.",
+            todos.get(7).getBody()
+        );
+        assertEquals(
+            "This a new todo an not part of the above todo.",
+            todos.get(8).getBody()
         );
     }
 
