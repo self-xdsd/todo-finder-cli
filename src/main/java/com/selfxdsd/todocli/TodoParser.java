@@ -213,7 +213,7 @@ public final class TodoParser {
     private boolean isLinePartOfTodo(final int todoPosition, final String line){
         return todoPosition < line.length()
             && Character.isSpaceChar(line.charAt(todoPosition))
-            && line.substring(0, todoPosition)
+            && line.substring(0, todoPosition + 1)
              .matches("^"+GIT_BLAME_PATTERN+"\\s*\\W?\\s+$");
     }
 
