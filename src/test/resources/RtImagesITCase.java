@@ -39,7 +39,7 @@ import java.util.Map;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #153:30min Add integration tests for filters.
+ * @todo #153:30min Edit:Add integration tests for filters.
  */
 public final class RtImagesITCase {
 

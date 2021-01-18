@@ -57,25 +57,20 @@ public final class JsonTodosSerializerTestCase {
         final URI location = serializer.serialize();
         final JsonReader reader = Json
             .createReader(location.toURL().openStream());
-        final JsonArray json = Json.createPatchBuilder()
-            .replace("/1/id", -2091730235)
-            .replace("/1/author", "cristianpela")
-            .replace("/1/timestamp", "2021-01-18 11:32:28 +0200")
-            .build()
-            .apply(reader.readArray());
+        final JsonArray json = reader.readArray();
         reader.close();
 
         MatcherAssert.assertThat(json, Matchers.equalTo(
             Json.createArrayBuilder()
                 .add(Json.createObjectBuilder()
-                    .add("id", 1194770182)
-                    .add("author", "Luka")
-                    .add("timestamp", "2020-11-08 09:32:57 +0100")
+                    .add("id", 888060502)
+                    .add("author", "cristianpela")
+                    .add("timestamp", "2021-01-18 12:29:17 +0200")
                     .add("start", 42)
                     .add("end", 42)
                     .add("originatingTicket", "#153")
                     .add("estimatedTime", 30)
-                    .add("body", "Add integration tests for filters.")
+                    .add("body", "Edit:Add integration tests for filters.")
                     .add("file", "src/test/resources/RtImagesITCase.java")
                     .build())
                 .add(Json.createObjectBuilder()
