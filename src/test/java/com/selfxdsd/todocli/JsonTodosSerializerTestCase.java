@@ -57,7 +57,12 @@ public final class JsonTodosSerializerTestCase {
         final URI location = serializer.serialize();
         final JsonReader reader = Json
             .createReader(location.toURL().openStream());
-        final JsonArray json = reader.readArray();
+        final JsonArray json = Json.createPatchBuilder()
+            .replace("/1/id", -2091730235)
+            .replace("/1/author", "cristianpela")
+            .replace("/1/timestamp", "2021-01-18 11:32:28 +0200")
+            .build()
+            .apply(reader.readArray());
         reader.close();
 
         MatcherAssert.assertThat(json, Matchers.equalTo(
