@@ -59,6 +59,7 @@ public final class TodoParser {
      * @param path Path to the file being parsed.
      * @return List of found TODOs.
      * @throws IOException If something goes wrong.
+     * @checkstyle ExecutableStatementCount (60 lines)
      */
     public List<Todo> parse(final String path) throws IOException {
         final List<Todo> todos = new ArrayList<>();
@@ -74,35 +75,55 @@ public final class TodoParser {
                 // for alignment in the case of multiline body todos.
                 // NOTE: this assumes that user is using 4 spaces for a tab.
                 line = line.replace("\t", " ".repeat(4));
-                if (todoPosition == -1) {
-                    todoPosition = this.checkForTodo(
-                        bodyBuilder,
-                        todoBuilder,
-                        lineIndex,
-                        line
-                    );
-                } else if (todoPosition < line.length()
-                    && Character.isSpaceChar(line.charAt(todoPosition))) {
-                    // if the character aligned to todoPosition is a white
-                    // space, then we have multiline.
-                    bodyBuilder.append(line.substring(todoPosition));
-                } else {
-                    final Todo todo = this.createTodo(
-                        bodyBuilder,
-                        todoBuilder,
-                        lineIndex
-                    );
-                    if (todo != null) {
-                        todos.add(todo);
+                if (!hasTodoStarted(todoPosition)) {
+                    final Matcher matcher = this.canStartTodo(line);
+                    if (matcher != null) {
+                        todoPosition = this.startTodo(
+                            matcher,
+                            bodyBuilder,
+                            todoBuilder,
+                            lineIndex,
+                            line
+                        );
                     }
-                    //reset buffer
-                    bodyBuilder.setLength(0);
-                    todoPosition = this.checkForTodo(
+                } else if (this.isLinePartOfTodo(todoPosition, line)) {
+                    // this line might start a todo too even if is passing the
+                    // todo line criteria.
+                    final Matcher matcher = this.canStartTodo(line);
+                    if (matcher != null) {
+                        this.endTodo(
+                            bodyBuilder,
+                            todoBuilder,
+                            lineIndex,
+                            todos
+                        );
+                        todoPosition = this.startTodo(
+                            matcher,
+                            bodyBuilder,
+                            todoBuilder,
+                            lineIndex,
+                            line
+                        );
+                    } else {
+                        this.addLineToTodo(todoPosition, line, bodyBuilder);
+                    }
+                } else {
+                    todoPosition = this.endTodo(
                         bodyBuilder,
                         todoBuilder,
                         lineIndex,
-                        line
+                        todos
                     );
+                    final Matcher matcher = this.canStartTodo(line);
+                    if (matcher != null) {
+                        todoPosition = this.startTodo(
+                            matcher,
+                            bodyBuilder,
+                            todoBuilder,
+                            lineIndex,
+                            line
+                        );
+                    }
                 }
             }
         }
@@ -110,51 +131,102 @@ public final class TodoParser {
     }
 
     /**
-     * Initializes a new todo and its body via builders when todo pattern
-     * is matching current line and returns the todo starting position.
-     * @param bodyBuilder Todo builder.
-     * @param todoBuilder Body builder.
-     * @param lineIndex Current line index.
-     * @param line Current line.
-     * @return Todo starting position in the line or -1 if there is no match.
+     * Checks if todo has started.
+     * @param todoPosition Position.
+     * @return Boolean
      */
-    private int checkForTodo(final StringBuilder bodyBuilder,
-                             final TodoBuilder todoBuilder,
-                             final int lineIndex,
-                             final String line) {
+    private boolean hasTodoStarted(final int todoPosition) {
+        return todoPosition != -1;
+    }
+
+    /**
+     * Checks if the line has valid todo in it.
+     * @param line Line.
+     * @return Matcher or null if there is no todo.
+     */
+    private Matcher canStartTodo(final String line){
         final Matcher matcher = TODO_PATTERN.matcher(line);
-        final int todoPosition;
+        final Matcher canStart;
         if (matcher.find()) {
-            todoPosition = matcher.start(3);
-            todoBuilder.setAuthor(matcher.group(1).trim())
-                .setTimestamp(matcher.group(2))
-                .setStart(lineIndex + 1);
-            bodyBuilder.append(matcher.group(6));
-            this.addHeader(todoBuilder, matcher.group(4));
+            canStart = matcher;
         } else {
-            todoPosition = -1;
+            canStart = null;
         }
+        return canStart;
+    }
+
+    /**
+     * Starts a todo.
+     * @param matcher Matcher
+     * @param bodyBuilder Todo body builder
+     * @param todoBuilder Tod builder.
+     * @param lineIndex File line index.
+     * @param line File line
+     * @return Starting position.
+     */
+    private int startTodo(final Matcher matcher,
+                          final StringBuilder bodyBuilder,
+                          final TodoBuilder todoBuilder,
+                          final int lineIndex,
+                          final String line){
+        final int todoPosition = matcher.start(3);
+        todoBuilder.setAuthor(matcher.group(1).trim())
+            .setTimestamp(matcher.group(2))
+            .setStart(lineIndex + 1);
+        bodyBuilder.append(matcher.group(6));
+        this.addHeader(todoBuilder, matcher.group(4));
         return todoPosition;
     }
 
     /**
-     * Creates the Todo if passes the body conditions.
-     * @param bodyBuilder Body builder.
+     * Ends the todo. This will create the Todo from builder and
+     * add it to the list. Also resets the body builder and reset
+     * the todoPosition (-1).
+     * @param bodyBuilder Todo body builder.
      * @param todoBuilder Todo builder.
-     * @param lineIndex Line index where will be the todo "end".
-     * @return Todo or null if was not created.
+     * @param lineIndex File line index.
+     * @param todos List of todos.
+     * @return Todo position reset value.
      */
-    private Todo createTodo(final StringBuilder bodyBuilder,
-                            final TodoBuilder todoBuilder,
-                            final int lineIndex) {
+    private int endTodo(final StringBuilder bodyBuilder,
+                        final TodoBuilder todoBuilder,
+                        final int lineIndex,
+                        final List<Todo> todos){
         final String body = bodyBuilder.toString().trim();
-        final Todo todo;
         if (!body.isBlank() && !body.startsWith("Autogenerated")) {
-            todo = todoBuilder.setBody(body).setEnd(lineIndex).build();
-        } else {
-            todo = null;
+            final Todo todo = todoBuilder
+                .setBody(body)
+                .setEnd(lineIndex)
+                .build();
+            todos.add(todo);
         }
-        return todo;
+        bodyBuilder.setLength(0);
+        return -1;
+    }
+
+    /**
+     * Checks if current line could be part of todo.
+     * @param todoPosition Todo position.
+     * @param line File line.
+     * @return Boolean.
+     */
+    private boolean isLinePartOfTodo(final int todoPosition, final String line){
+        return todoPosition < line.length()
+            && Character.isSpaceChar(line.charAt(todoPosition))
+            && line.substring(0, todoPosition + 1)
+             .matches("^"+GIT_BLAME_PATTERN+"\\s*\\W?\\s+$");
+    }
+
+    /**
+     * Add current line to todo body builder starting from todoPosition.
+     * @param todoPosition Todo position.
+     * @param bodyBuilder Todo body builder.
+     * @param line File line.
+     */
+    private void addLineToTodo(final int todoPosition,
+                               final String line,
+                               final StringBuilder bodyBuilder){
+        bodyBuilder.append(line.substring(todoPosition).stripTrailing());
     }
 
     /**

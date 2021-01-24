@@ -56,4 +56,26 @@ public class LegalTodos {
     public void methodF() {
 
     }
+
+    /**
+     * Method G.
+     *
+     *      @todo #200:30min Single line todo method G.
+     *  This line is not part of todo even if a space is aligned with start.
+     *
+     */
+    public void methodG() {
+
+    }
+
+    /**
+     * Method H.
+     *
+     * @todo #200:30min Single line todo method H.
+     *  @todo #201:30min This a new todo an not part of the above todo.
+     *
+     */
+    public void methodG() {
+
+    }
 }

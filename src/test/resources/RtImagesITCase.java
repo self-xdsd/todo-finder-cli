@@ -39,7 +39,7 @@ import java.util.Map;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #153:30min Add integration tests for filters.
+ * @todo #153:30min Edit:Add integration tests for filters.
  */
 public final class RtImagesITCase {
 
@@ -66,7 +66,7 @@ public final class RtImagesITCase {
     /**
      * {@link RtImages} can filter Images and return filtered Images.
      * @throws Exception If an error occurs.
-     * @todo #187:30min To have multiple controlled images for filtering and
+     * @todo #187:30min Edit:To have multiple controlled images for filtering and
      *  not the ubuntu image dependency for this test will be nice to have
      *  the build Images implemented as described here:
      *  https://docs.docker.com/engine/api/v1.37/#operation/ImageBuild.

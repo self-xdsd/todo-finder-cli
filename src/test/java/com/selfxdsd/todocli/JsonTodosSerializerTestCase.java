@@ -63,29 +63,29 @@ public final class JsonTodosSerializerTestCase {
         MatcherAssert.assertThat(json, Matchers.equalTo(
             Json.createArrayBuilder()
                 .add(Json.createObjectBuilder()
-                    .add("id", 1194770182)
-                    .add("author", "Luka")
-                    .add("timestamp", "2020-11-08 09:32:57 +0100")
+                    .add("id", 888060502)
+                    .add("author", "cristianpela")
+                    .add("timestamp", "2021-01-18 12:29:17 +0200")
                     .add("start", 42)
                     .add("end", 42)
                     .add("originatingTicket", "#153")
                     .add("estimatedTime", 30)
-                    .add("body", "Add integration tests for filters.")
+                    .add("body", "Edit:Add integration tests for filters.")
                     .add("file", "src/test/resources/RtImagesITCase.java")
                     .build())
                 .add(Json.createObjectBuilder()
-                    .add("id", -1377131499)
-                    .add("author", "Luka")
-                    .add("timestamp", "2020-11-08 09:32:57 +0100")
+                    .add("id", -2091730235)
+                    .add("author", "cristianpela")
+                    .add("timestamp", "2021-01-18 11:32:28 +0200")
                     .add("start", 69)
                     .add("end", 72)
                     .add("originatingTicket", "#187")
                     .add("estimatedTime", 30)
                     .add("body",
-                        "To have multiple controlled images for filtering and"
-                            + " not the ubuntu image dependency for this test"
-                            + " will be nice to have the build Images"
-                            + " implemented as described here:"
+                        "Edit:To have multiple controlled images for"
+                            + " filtering and not the ubuntu image dependency"
+                            + " for this test will be nice to have the build"
+                            + " Images implemented as described here:"
                             + " https://docs.docker.com/engine/api/v1.37/"
                             + "#operation/ImageBuild."
                     )
