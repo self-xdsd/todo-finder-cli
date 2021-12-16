@@ -8,7 +8,7 @@
 [![We recommend IntelliJ IDEA](http://amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
 
 
-TODO Finder CLI, version `0.0.6`.
+TODO Finder CLI, version `0.0.7`.
 
 This is a small Java CLI tool which scans the directory where it's being run and reports all the TODOs or FIXMEs found in the code files.
 
