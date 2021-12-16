@@ -10,7 +10,7 @@ import javax.json.JsonObject;
  *
  * @version $Id$
  * @since 0.0.1
- * @todo #1:30 Just a test todo after log4j update.
+ * @todo #1:30min Just a test todo after log4j update.
  */
 public final class JsonTodoTest {
 
